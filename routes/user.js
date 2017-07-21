@@ -29,4 +29,17 @@ router.post('/register', (req, res, next) => {
 
 });
 
+// Get User By Id 
+router.get('/:id', (req, res, next) => {
+	User.findById(req.params.id, (err, user) => {
+		if(err) return res.json({ success: false, error: err});
+		else {
+			return res.json({ success: true, user: user});
+		}
+	});
+});
+
+//Put User By Id
+
+
 module.exports = router;
