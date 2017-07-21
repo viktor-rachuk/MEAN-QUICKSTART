@@ -10,7 +10,23 @@ const User = require('../models/user');
 
 // Register
 router.post('/register', (req, res, next) => {
-  
+	var newUser = new User({
+		username = req.body.username;
+		name = req.body.name;
+		email = req.body.email;
+		photo: req.body.photo;
+		accounttype = req.body.accounttype;
+		status = req.body.status;
+		password: req.body.password;
+	});
+
+	newUser.createUser(newUser, (err, user) => {
+		if(err) return res.json({ success: false, msg: 'Somethin went wrong!'});
+		else {
+			res.json({success: true, msg: 'Successfully created!!'});
+		}
+	});
+
 });
 
 module.exports = router;

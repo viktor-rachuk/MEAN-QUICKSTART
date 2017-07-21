@@ -9,6 +9,10 @@ const UserSchema = mongoose.Schema({
     unique: true,
     required: true
   },
+  name: [
+    first: '',
+    last: ''
+  ],
   email: {
     type: String,
     unique: true,
@@ -23,4 +27,18 @@ const UserSchema = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("User", UserSchema);
+const User = (module.exports = mongoose.model("User", UserSchema));
+
+module.exports.createUser = function(user, callback) {
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(user.password, salt, (err, hash) => {
+      if(err) return res.json({
+        success: false,
+        msg: 'Something went wrong!!'
+      });
+
+        user.password = hash;
+        user.save(callback);
+    });
+  });
+};
