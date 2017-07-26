@@ -9,6 +9,10 @@ import { MenuComponent } from './components/menu/menu.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.component';
+import { HomeComponent } from './components/src/app/components/home/home.component';
+import { PostComponent } from './components/src/app/components/post/post.component';
+import { CreatepostComponent } from './components/post/src/app/components/post/createpost/createpost.component';
+import { EditpostComponent } from './components/post/src/app/components/post/editpost/editpost.component';
 
 const appRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -24,7 +28,11 @@ const appRoutes: Routes = [
     MenuComponent,
     LoginComponent,
     RegisterComponent,
-    PagenotfoundComponent
+    PagenotfoundComponent,
+    HomeComponent,
+    PostComponent,
+    CreatepostComponent,
+    EditpostComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),
