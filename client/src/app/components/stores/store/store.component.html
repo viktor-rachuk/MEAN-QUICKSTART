@@ -1,0 +1,166 @@
+<!-- page title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Store Details</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Store Details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+<div class="hr-line-dashed"></div>
+<div class="row">
+    <form class="form-horizontal group-border stripped" #storeForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="panel panel-card margin-b-30">
+                <div class="well">
+                    <h4 class="mb-xlg">Store Information</h4>
+                    <div class="panel-body">
+                        <div class="form-group" [ngClass]="{ 'has-error': title.touched && title.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Store Title</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="title" placeholder="Enter Store Title" minlength="4" class="form-control" [(ngModel)]="store.store_title" #title="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': store_type.touched && store_type.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Store Type</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="store_type" placeholder="Enter Store Type" minlength="4" class="form-control" [(ngModel)]="store.store_type" #store_type="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': email.touched && email.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Email</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="email" placeholder="Enter email" class="form-control" [(ngModel)]="store.email" #email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': phone.touched && phone.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Phone</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="phone" placeholder="Phone number" class="form-control" [(ngModel)]="store_info.phone" #phone="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': mobile.touched && mobile.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Mobile</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="mobile" placeholder="Mobile number" class="form-control" [(ngModel)]="store_info.mobile" #mobile="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': fax.touched && fax.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Fax</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="fax" placeholder="Fax " class="form-control" [(ngModel)]="store_info.fax" #fax="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': address1.touched && address1.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Address</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" placeholder="" class="form-control" name="address1" [(ngModel)]="address.address1" #address1="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': address2.touched && address2.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label"></label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" class="form-control" name="address2" [(ngModel)]="address.address2" #address2="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': region.touched && region.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Region</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="region" [(ngModel)]="store_info.region" (change)="selectRegion($event)" #region="ngModel" required>
+                                <option *ngFor="let reg of regions" [value]="reg">{{ reg }}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': city.touched && city.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">City</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="city" [(ngModel)]="store_info.city" name="city" #city="ngModel" required>
+                                <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': post_code.touched && post_code.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Post Code</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" placeholder="Enter Post Code" name="post_code" class="form-control" [(ngModel)]="store_info.postcode" #post_code="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': country.touched && country.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Country</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="country" [(ngModel)]="store_info.country" required #country="ngModel">
+                                <option value="new zealand">New Zealand</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Parent</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="parent" [(ngModel)]="store.parent" #parent="ngModel">
+                                    <option value="" selected=""></option>
+                                    <option *ngFor="let s of stores" [value]="s._id">{{ s.store_title }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="mb-xlg">Account Information</h4>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Bank Account</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="bank_account" placeholder="Enter Bank Account" minlength="4" class="form-control" [(ngModel)]="account_info.bank_account" #bank_account="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">GST Number</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="gst_number" placeholder="Enter GST Number" minlength="4" class="form-control" [(ngModel)]="account_info.gst_number" #gst_number="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Accounts Payable Email</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="payable_email" placeholder="Enter Accounts Payable Email" class="form-control" [(ngModel)]="account_info.payable_email" #payable_email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="panel panel-card margin-b-30">
+                <div class="well">
+                    <h4 class="mb-xlg">User Directory</h4>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Assigned Users</label>
+                            <div class="col-lg-8 col-md-8">
+                                <ul class="form-control villages_list">
+                                    <li *ngFor="let item of users ">
+                                        <span>{{item.username}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row text-center">
+                                <button class="btn btn-info btn-primary" (click)="cancel()">
+                                Cancel
+                            </button>
+                                <button type="submit" class="btn btn-info  btn-primary">
+                                Save
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

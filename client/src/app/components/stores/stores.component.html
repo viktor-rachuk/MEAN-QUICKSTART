@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Store Management</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Store Management</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group" *ngIf=" user.accounttype === 'super'">
+            <a [routerLink]="['/createstore']" class="btn btn-primary"><i class="fa fa-building"></i> Create New Store</a>
+        </div>
+        <div class="form-group" *ngIf=" user.accounttype === 'staff' || user.accounttype === 'customer'">
+            <ng-container *ngIf="store_permission.create">
+                <a [routerLink]="['/createstore']" class="btn btn-primary"><i class="fa fa-building"></i> Create New Store</a>
+            </ng-container>
+        </div>
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="" class="control-label">Filter By</label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="col-lg-2 col-md-3 control-label">Region</label>
+                        <div class="col-lg-8 col-md-8">
+                            <select class="fancy-select form-control" name="region" [(ngModel)]="filterRegion" (change)="selectRegion($event)" #region="ngModel">
+                                <option value="" selected>All Regions</option>
+                                <option *ngFor="let reg of regions" [value]="reg">{{ reg }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="col-lg-2 col-md-3 control-label">City</label>
+                        <div class="col-lg-8 col-md-8">
+                            <select class="fancy-select form-control" [(ngModel)]="filterCity" name="city" #city="ngModel" (change)="selectCity($event)">
+                                <option value="" selected>All Cities</option>
+                                <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12s">
+            <div class="table-responsive">
+                <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+                                #
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Store</th>
+                            <th id="custom-sort" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2">Contact</th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">City</th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of filteredStores">
+                        <tr>
+                            <ng-container *ngIf="user.accounttype === 'super'">
+                                <td class="title">
+                                    <input type="checkbox" name="select" value="{{item._id}}" (change)="selectElement($event)">
+                                </td>
+                                <td class="title"><a [routerLink]="['/store', item._id]">{{ item.store_title }}</a></td>
+                                <td class="title">{{ item.email }}</td>
+                                <td class="title">{{ item.store_info.city}}</td>
+                                <td class="title">
+                                    <span class="label label-success" *ngIf="item.status">active</span>
+                                    <span class="label label-danger" *ngIf="!item.status">inactive</span>
+                                </td>
+                            </ng-container>
+                            <ng-container *ngIf="user.accounttype === 'staff' || user.accounttype === 'customer'">
+                                <td class="title">
+                                    <input type="checkbox" value="{{item._id}}" (change)="selectElement($event)">
+                                </td>
+                                <td class="title">
+                                    <ng-container *ngIf="store_permission.edit">
+                                        <a [routerLink]="['/store', item._id]">{{ item.store_title }}</a>
+                                    </ng-container>
+                                    <ng-container *ngIf="!store_permission.edit">
+                                        {{ item.store_title }}
+                                    </ng-container>
+                                </td>
+                                <td class="title">{{ item.key_contact }}</td>
+                                <td class="title">{{ item.store_info.city}}</td>
+                                <td class="title">
+                                    <span class="label label-success" *ngIf="item.status">active</span>
+                                    <span class="label label-danger" *ngIf="!item.status">inactive</span>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12">
+        <ng-container *ngIf="user.accounttype === 'super'">
+            <div class="form-group">
+                <button type="button" id="button-filter" (click)="deleteStores()" class="btn btn-primary "><i class="fa fa-delete"></i> Delete Selected</button>
+
+                <button type="button" id="button-filter" (click)="deactivateStores()" class="btn btn-primary "><i class="fa fa-delete"></i> Deactivate Selected</button>
+
+                <button type="button" id="button-filter" (click)="reactivateStores()" class="btn btn-primary "><i class="fa fa-delete"></i> Reactivate Selected</button>
+            </div>
+
+        </ng-container>
+        <ng-container *ngIf="user.accounttype === 'customer' || user.accounttype === 'staff' ">
+            <div class="form-group">
+                <ng-container *ngIf="store_permission.delete">
+                    <button type="button" id="button-filter" (click)="deactivateStores()" class="btn btn-primary "><i class="fa fa-delete"></i> Deactivate Selected</button>
+
+                    <button type="button" id="button-filter" (click)="reactivateStores()" class="btn btn-primary "><i class="fa fa-delete"></i> Reactivate Selected</button>
+                </ng-container>
+            </div>
+
+        </ng-container>
+
+    </div>
+</div>
