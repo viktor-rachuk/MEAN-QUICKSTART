@@ -1,0 +1,22 @@
+.villages_list {
+	height:300px; 
+	width:100%;
+	overflow:hidden; 
+	overflow-y:scroll;
+	list-style:none;
+}
+
+li span {
+	margin-left: 25px;
+	font-size: 16px;
+}
+
+li {
+	border-top: 1px solid grey;
+}
+
+.edit-store {
+	color: #23527c;
+	margin-left: 25px;
+	cursor: pointer;
+}

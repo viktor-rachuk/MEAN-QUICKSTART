@@ -1,0 +1,6 @@
+<ng-container *ngIf="accounttype === 'staff'">
+  <edit-staff [user]="user"></edit-staff>
+</ng-container>
+<ng-container *ngIf="accounttype === 'customer'">
+  <app-customeredit [user]="user"></app-customeredit>
+</ng-container>

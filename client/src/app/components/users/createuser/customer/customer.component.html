@@ -1,0 +1,239 @@
+<!-- end .page title-->
+<div class="row">
+    <form class="form-horizontal group-border stripped" name="form" #userForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="col-md-6 margin-b-30">
+            <div class="profile-overview">
+                <div class="profile-edit">
+                    <h4 class="mb-xlg">Personal Information</h4>
+                    <fieldset>
+                        <div class="form-group" [ngClass]="{ 'has-error' : username.invalid && username.touched }">
+                            <label class="col-md-3 control-label" for="profileName">Name</label>
+                            <div class="col-md-8">
+                                <input type="text" name="username" id="profileName" placeholder="Enter Your UserName" minlength="4" maxlength="24" class="form-control" [(ngModel)]="customer.username" #username="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : email.invalid && email.touched}">
+                            <label class="col-md-3 control-label" for="profileEmail">Email</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profileEmail" name="email" placeholder="Enter email" class="form-control" [(ngModel)]="customer.email" #email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : phone.invalid && phone.touched}">
+                            <label class="col-md-3 control-label" for="profilePhone">Phone</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profilePhone" name="phone" placeholder="Phone number" class="form-control" [(ngModel)]="user_info.phone" #phone="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : mobile.invalid && mobile.touched}">
+                            <label class="col-md-3 control-label" for="profileMobile">Mobile</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profileMobile" name="mobile" placeholder="Mobile number" class="form-control" [(ngModel)]="user_info.mobile" #mobile="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : position.invalid && position.touched}">
+                            <label class="col-md-3 control-label" for="profilePosition">Position</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profilePosition" placeholder="Enter Position" class="form-control" name="position" [(ngModel)]="customer_info.position" #position="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : prefered_contact.invalid && prefered_contact.touched}">
+                            <label class="col-md-3 control-label" for="prefered_contact">Prefered Contact Method</label>
+                            <div class="col-md-8">
+                                <select class="fancy-select form-control" name="prefered_contact" [(ngModel)]="customer_info.prefered_contact" required #prefered_contact="ngModel">
+                                    <option value="phone">Phone</option>
+                                    <option value="mobile">Mobile</option>
+                                    <option value="email">Email</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Assigned Company(s)</label>
+                            <div class="col-md-8">
+                                <ul class="form-control villages_list">
+                                    <li *ngFor="let item of companies; let i = index ">
+                                        <input type="checkbox" name="selectCompany" value="{{item._id}}" (change)="selectCompany($event)" />
+                                        <span>{{item.name}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 margin-b-30">
+            <div class="profile-edit">
+                <hr class="dotted tall">
+                <div class="avtar text-center">
+                    <img [src]="photoUrl" alt="Preview" class="img-thumbnail img-responsive" style="width:30%; height: 30%;">
+                    <hr>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Photo</label>
+                    <div class="col-lg-3 col-md-3">
+                        <input type="file" (change)="readPhoto($event)" placeholder="Upload logo..." />
+                    </div>
+                </div>
+                <h4 class="mb-xlg">Permission & Access</h4>
+                <fieldset>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="profileRole">Role</label>
+                        <div class="col-md-3" *ngIf="modalValid">
+                            <select class="fancy-select form-control" id="profileRole" name="role" [(ngModel)]="customer.role_name" #role="ngModel">
+                                <option *ngFor="let r of roles" [value]="r.role_name">{{r.role_name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#roleModal"> Manage This User's Permission</button>
+                        </div>
+                        <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h4 class="modal-title">Manage This User's Permission</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="col-md-12 col-sm-12s">
+                                                    <div class="table-responsive">
+                                                        <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+                                                                        Permitted Action
+                                                                    </th>
+                                                                    <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Create</th>
+                                                                    <th id="custom-sort" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2">Edit</th>
+                                                                    <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Deactivate</th>
+                                                                    <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="5">View Only</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="title">
+                                                                        Manage Staff Users
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="create_staff" [checked]="staffPermission.create" (change)="staffPermission.create = !staffPermission.create" />
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="edit_staff" [checked]="staffPermission.edit" (change)="staffPermission.edit = !staffPermission.edit"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_staff" [checked]="staffPermission.delete" (change)="staffPermission.delete = !staffPermission.delete"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_staff" [checked]="staffPermission.view" (change)="staffPermission.view = !staffPermission.view"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="title">
+                                                                        Manage Customer Users
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="create_customer" [checked]="customerPermission.create" (change)="customerPermission.create = !customerPermission.create"></td>
+                                                                    <td class="title"><input type="checkbox" name="edit_customer" [checked]="customerPermission.edit" (change)="customerPermission.edit = !customerPermission.edit"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_customer" [checked]="customerPermission.delete" (change)="customerPermission.delete = !customerPermission.delete"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_customer" [checked]="customerPermission.view" (change)="customerPermission.view = !customerPermission.view"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="title">
+                                                                        Manage Stores
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="create_store" [checked]="storePermission.create" (change)="storePermission.create = !storePermission.create"></td>
+                                                                    <td class="title"><input type="checkbox" name="edit_store" [checked]="storePermission.edit" (change)="storePermission.edit = !storePermission.edit"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_store" [checked]="storePermission.delete" (change)="storePermission.delete = !storePermission.delete"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_store" [checked]="storePermission.view" (change)="storePermission.view = !storePermission.view"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="title">
+                                                                        Manage Orders
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="create_order" [checked]="orderPermission.create" (change)="orderPermission.create  = !orderPermission.create"></td>
+                                                                    <td class="title"><input type="checkbox" name="edit_order" [checked]="orderPermission.edit" (change)="orderPermission.edit = !orderPermission.edit"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_order" [checked]="orderPermission.delete" (change)="orderPermission.delete = !orderPermission.delete"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_order" [checked]="orderPermission.view" (change)="orderPermission.view = !orderPermission.view"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="title">
+                                                                        Manage User Roles
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="create_role" [checked]="rolePermission.create" (change)="rolePermission.create = !rolePermission.create"></td>
+                                                                    <td class="title"><input type="checkbox" name="edit_role" [checked]="rolePermission.edit" (change)="rolePermission.edit = !rolePermission.edit"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_role" [checked]="rolePermission.delete" (change)="rolePermission.delete = !rolePermission.delete"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_role" [checked]="rolePermission.view" (change)="rolePermission.view = !rolePermission.view"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="title">
+                                                                        Manage Companies
+                                                                    </td>
+                                                                    <td class="title"><input type="checkbox" name="create_company" [checked]="companyPermission.create" (change)="companyPermission.create = !companyPermission.create"></td>
+                                                                    <td class="title"><input type="checkbox" name="edit_company" [checked]="companyPermission.edit" (change)="companyPermission.edit = !companyPermission.edit"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_company" [checked]="companyPermission.delete" (change)="companyPermission.delete = !companyPermission.delete"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_company" [checked]="companyPermission.view" (change)="companyPermission.view = !companyPermission.view"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="title"></td>
+                                                                    <td class="title"><input type="checkbox" name="create_all" value="create" (change)="selectAll($event)"></td>
+                                                                    <td class="title"><input type="checkbox" name="edit_all" value="edit" (change)="selectAll($event)"></td>
+                                                                    <td class="title"><input type="checkbox" name="delete_all" value="delete" (change)="selectAll($event)"></td>
+                                                                    <td class="title"><input type="checkbox" name="view_all" value="view" (change)="selectAll($event)"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <br>
+                                            <div class="col-sm-6">
+                                                <label for="" class="col-md-5 control-label">Home Screen</label>
+                                                <div class="col-md-7">
+                                                    <select class="form-control m-b" name="home_url" [(ngModel)]="home_url">
+                                                        <option value=""></option>
+                                                        <option value="dashboard">Dashboard</option>
+                                                        <option value="users">Users</option>
+                                                        <option value="roles">User Roles</option>
+                                                        <option value="stores">Stores</option>
+                                                        <option value="orders">Orders</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="checkbox" name="display_dashboard" [checked]="display_dashboard" (change)="display_dashboard = !display_dashboard">
+                                                <label for="">Display Dashboard</label>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-accent" data-dismiss="modal" (click)="savePermissions()">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{ 'has-error' : password.invalid && password.touched }">
+                        <label class="col-md-3 control-label" for="profilePassword">Password</label>
+                        <div class="col-md-8">
+                            <input type="password" id="profilePassword" placeholder="" class="form-control" name="password" [(ngModel)]="customer.password" #password="ngModel" required>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{ 'has-error' : confirmpassword.invalid && confirmpassword.touched }">
+                        <label class="col-md-3 control-label" for="profileRepeatPassword">Confirm Password</label>
+                        <div class="col-md-8">
+                            <input type="password" id="profileRepeatPassword" placeholder="" class="form-control" name="confirmpassword" [(ngModel)]="customer.confirm_password" #confirmpassword="ngModel" required>
+                            <div class="col-sm-6 col-sm-offset-3" *ngIf="(customer.password !== customer.confirm_password) && (confirmpassword.dirty|| confirmpassword.touched )">
+                                <div class="password_not_match">The passwords entered do not match</div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-9 col-md-offset-3">
+                            <button type="submit" class="btn btn-primary" [disabled]="!userForm.form.valid || (customer.password !== customer.confirm_password)">Submit</button>
+                            <button type="reset" class="btn btn-default">Reset</button>
+                            <button class="btn btn-info btn-primary" (click)="cancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
