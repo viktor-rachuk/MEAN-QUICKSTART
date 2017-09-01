@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-title">
+      <div class="row">
+        <h4 class="pull-left">Colour Schemes + Areas</h4>
+        <ol class="breadcrumb pull-right">
+          <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+          <li>Colour Schemes + Areas</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end .page title-->
+
+
+<div class="row">
+	<div class="col-sm-12">
+	    <div class="form-group">
+	      <a [routerLink]="['/col-schema/create']" class="btn btn-primary"><i class="fa fa-user"></i> Create New Colour Scheme</a>
+	    </div>
+
+		<div class="col-md-12 col-sm-12s">
+	  		<div class="table-responsive">
+	    		<table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+	    			<thead>
+			            <tr>
+			            	<th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+			                	#
+			              	</th>
+			              	<th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Name</th>
+
+			              	<th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Unit Type Assigned To</th>
+
+			              	<th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Status</th>
+			            </tr>
+			        </thead>
+
+			        <tbody *ngFor="let item of colSchemas">
+			            <tr>
+			              <td class="title">
+			                <input type="checkbox" name="select" value="{{item._id}}" (change)="selectElement($event)" />
+			              </td>
+			              <td class="title">
+			                 <a [routerLink]="['/col-schema', item._id]">{{ item.name }}</a>
+			              </td>
+
+			              <td class="title">{{ item.unittypes_assigned }}</td>
+
+			              <td class="title">{{ item.status ? 'active' : 'inactive' }}</td>
+			            </tr>
+
+			        </tbody>
+			    </table>
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="form-group">
+      <button type="button"  class="btn btn-primary " (click)="deleteColSchemas()"><i class="fa fa-delete"></i> Delete Selected</button>
+      <button type="button"  class="btn btn-primary " (click)="deactivateColSchemas()"><i class="fa fa-delete"></i> Deactivate Selected</button>
+      <button  type="button"  class="btn btn-primary " (click)="reactivateColSchemas()"><i class="fa fa-delete"></i> Reactivate Selected</button>
+    </div>
+  </div>
+</div>

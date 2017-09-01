@@ -1,0 +1,222 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-title">
+      <div class="row">
+        <h4 class="pull-left">Create New ColourScheme</h4>
+        <ol class="breadcrumb pull-right">
+          <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+          <li>Create New ColourScheme</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+    <h5>Colour Scheme Name</h5>
+    <input type="text" name="name" placeholder="Enter Colour Schemes Name" minlength="3"  class="form-control" [(ngModel)]="colSchema.name"
+    #name="ngModel" required>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+      <div class="form-group">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#createAreaModal"><i class="fa fa-user"></i> Create New Area</button>
+        <div class="modal fade" id="createAreaModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="modal-title">Create New Area</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Name</strong> </div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_name" placeholder="Enter New Area Name" minlength="3"  class="form-control" [(ngModel)]="newArea.name">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Supplier</strong> </div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_name" placeholder="Enter New Area Name" minlength="3"  class="form-control" [(ngModel)]="newArea.supplier">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Code</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_code" placeholder="Enter Area Code" minlength="3"  class="form-control" [(ngModel)]="newArea.code">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Product</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_product" placeholder="Enter Area Product" minlength="3"  class="form-control" [(ngModel)]="newArea.product">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Colour</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_colour" placeholder="Enter Area Colour" minlength="3"  class="form-control" [(ngModel)]="newArea.colour">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Install Details</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_install" placeholder="Enter Area Install Details" minlength="3" class="form-control" [(ngModel)]="newArea.install">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Price</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_price" placeholder="Enter Area Price" minlength="3"  class="form-control" [(ngModel)]="newArea.price">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="col-sm-4 col-xs-4 item_field"><button class="btn btn-primary" data-dismiss="modal" (click)="createArea()">Save</button></div>
+                <div class="col-sm-4 col-xs-4"><button class="btn btn-default" data-dismiss="modal" >Cancel</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="editAreaModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="modal-title">Create New Area</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Name</strong> </div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_name" placeholder="Enter New Area Name" minlength="3"  class="form-control"  [(ngModel)]="selectedArea.name">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Supplier</strong> </div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_name" placeholder="Enter New Area Name" minlength="3"  class="form-control" [(ngModel)]="selectedArea.supplier">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Code</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_code" placeholder="Enter Area Code" minlength="3"  class="form-control" [(ngModel)]="selectedArea.code">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Product</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_product" placeholder="Enter Area Product" minlength="3"  class="form-control" [(ngModel)]="selectedArea.product">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Colour</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_colour" placeholder="Enter Area Colour" minlength="3"  class="form-control" [(ngModel)]="selectedArea.colour">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Install Details</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_install" placeholder="Enter Area Install Details" minlength="3" class="form-control" [(ngModel)]="selectedArea.install">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-xs-4 item_field"><strong>Price</strong></div>
+                  <div class="col-sm-4 col-xs-4">
+                    <input type="text" name="area_price" placeholder="Enter Area Price" minlength="3"  class="form-control" [(ngModel)]="selectedArea.price">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="col-sm-4 col-xs-4 item_field"><button class="btn btn-primary" data-dismiss="modal" (click)="saveArea()">Save</button></div>
+                <div class="col-sm-4 col-xs-4"><button class="btn btn-default" data-dismiss="modal" >Cancel</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+          <thead>
+            <tr>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+                  #
+              </th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Name</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Supplier</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Code</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Product</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Colour</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Install</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Price</th>
+            </tr>
+          </thead>
+
+          <tbody *ngFor="let item of areas">
+            <tr>
+              <td class="title" >
+                <input type="checkbox" name="select" value="{{item.supplier}}" (change)="selectArea($event)" />
+              </td>
+              <td class="title"  data-toggle="modal"  data-target="#editAreaModal" style="cursor: pointer; color: #23527c;" (click)="editArea(item)">
+                {{ item.name }}
+              </td>
+              <td class="title">
+                 {{ item.supplier }}
+              </td>
+              <td class="title">
+                 {{ item.code }}
+              </td>
+              <td class="title">
+                 {{ item.product }}
+              </td>
+              <td class="title">
+                 {{ item.colour }}
+              </td>
+              <td class="title">
+                 {{ item.install }}
+              </td>
+              <td class="title">
+                 ${{ item.price }}
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <br>
+      <div class="form-group">
+        <button class="btn btn-primary pull-right" (click)="deleteAreas()"><i class="fa fa-user"></i> Delete Selected</button>
+      </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+    <h5>Assign to Unit Types</h5>
+    <ul class="form-control villages_list">
+      <li *ngFor="let item of unitTypes ">
+        <input type="checkbox" name="select" value="{{item._id}}" (change)="selectUnitType($event)" />
+        <span>{{item.name}}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-md-6 col-sm-12s col-md-offset-3 text-center">
+    <button class="btn btn-info btn-primary" (click)="cancel()">
+        Cancel
+     </button>
+    <button [disabled] ="colSchema.name.length < 3" class="btn btn-info  btn-primary" (click)="save()">
+        Save
+    </button>
+  </div>
+</div>
+

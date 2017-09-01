@@ -1,0 +1,15 @@
+.villages_list {
+	height:300px; 
+	width:100%;
+	overflow:hidden; 
+	overflow-y:scroll;
+	list-style:none;
+}
+
+.form-control {
+	font-size: 19px;
+}
+
+span {
+	margin-left: 30px;
+}

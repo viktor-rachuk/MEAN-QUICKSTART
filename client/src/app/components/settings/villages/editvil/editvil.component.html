@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-title">
+      <div class="row">
+        <h4 class="pull-left">Edit Village</h4>
+        <ol class="breadcrumb pull-right">
+          <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+          <li>Edit Village</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="col-sm-5 col-md-5">
+      <input type="text" name="name" placeholder="Enter Village Name" minlength="3"  class="form-control" [(ngModel)]="village.name"
+        #name="ngModel" required>
+    </div>
+  </div>
+</div>
+<br>
+
+<div class="row">  
+  <div class="col-md-6 col-sm-12s text-center">
+    <button class="btn btn-info btn-primary" (click)="cancel()">
+        Cancel
+     </button>
+    <button class="btn btn-info  btn-primary" (click)="save()">
+        Save
+    </button>
+  </div>
+</div>
+

@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-title">
+      <div class="row">
+        <h4 class="pull-left">Create New UnitType</h4>
+        <ol class="breadcrumb pull-right">
+          <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+          <li>Create New UnitType</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+    <input type="text" name="name" placeholder="Enter UnitType Name" minlength="3"  class="form-control" [(ngModel)]="newUnitType.name"
+    #name="ngModel" required>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+    <ul class="form-control villages_list">
+      <li *ngFor="let item of villages ">
+        <input type="checkbox" name="select" value="{{item._id}}" (change)="selectVillage($event)" />
+        <span>{{item.name}}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-md-6 col-sm-12s col-md-offset-3 text-center">
+    <button class="btn btn-info btn-primary" (click)="cancel()">
+        Cancel
+     </button>
+    <button [disabled] ="newUnitType.name.length < 3" class="btn btn-info  btn-primary" (click)="save()">
+        Save
+    </button>
+  </div>
+</div>
+

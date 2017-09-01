@@ -1,0 +1,37 @@
+.villages_list {
+	height:300px; 
+	width:100%;
+	overflow:hidden; 
+	overflow-y:scroll;
+	list-style:none;
+}
+
+.form-control {
+	font-size: 15px;
+}
+
+span {
+	margin-left: 30px;
+}
+
+.invnum {
+	color: #23527c;
+	cursor: pointer;
+}
+
+.modal-dialog {
+	margin-top: 15%;
+}
+
+.item_field {
+	text-align: right;
+}
+
+.modal-header {
+	background-color: #01a8fe;
+	color: white;
+}
+
+.modal-content {
+	border-radius: 0px;
+}

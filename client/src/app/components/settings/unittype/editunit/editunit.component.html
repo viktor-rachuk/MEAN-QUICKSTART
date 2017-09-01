@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-title">
+      <div class="row">
+        <h4 class="pull-left">UnitType Details</h4>
+        <ol class="breadcrumb pull-right">
+          <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+          <li>UnitType Details</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+    <input type="text" name="name" placeholder="Enter UnitType Name" minlength="4" class="form-control" [(ngModel)]="unitType.name"
+    #name="ngModel" required>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-sm-6 col-md-6 col-xs-12 col-md-offset-3">
+    <ul class="form-control villages_list">
+      <li *ngFor="let v of villages ">
+          <input type="checkbox" [checked]="v.checked" name="select" value="{{v._id}}" (change)="selectVillage($event)" />
+          <span>{{v.name}}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-md-6 col-sm-12s col-md-offset-3 text-center">
+    <button class="btn btn-info btn-primary" (click)="cancel()">
+        Cancel
+     </button>
+    <button [disabled]="name.invalid" class="btn btn-info  btn-primary" (click)="save()">
+        Save
+    </button>
+  </div>
+</div>
+
