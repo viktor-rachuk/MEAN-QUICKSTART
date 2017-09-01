@@ -1,0 +1,259 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Orders/Invoices Management</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Orders/Invoices Management</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <ng-container *ngIf="user.accounttype === 'super'">
+                <button class="btn btn-primary" (click)="createOrder()"><i class="fa fa-bank"></i>Create Order</button>
+            </ng-container>
+            <ng-container *ngIf="user.accounttype=='staff'||user.accounttype=='customer'">
+                <button *ngIf="order_permission.create" (click)="createOrder()" class="btn btn-primary"><i class="fa fa-bank"></i>Create Order</button>
+            </ng-container>
+        </div>
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">Filter By</label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label" for="input-status">Type</label>
+                        <select name="filter_type" id="input-status" class="form-control" (change)="filter($event)" [(ngModel)]="fType">
+              <option value="All">All</option>
+              <option value="Order">Order</option>
+              <option value="Invoice">Invoice</option>
+            </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label" for="input-status">Store</label>
+                        <select name="filter_store" id="filter_store" class="form-control" (change)="filter($event)" [(ngModel)]="fStore">
+              <option value="All" selected>All</option>
+              <option *ngFor="let s of stores" value="{{s.store_title}}">{{s.store_title}}</option>
+            </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label" for="input-status">Company / Village</label>
+                        <select name="filter_village" id="filter_village" class="form-control" (change)="filter($event)" [(ngModel)]="fVillage">
+              <option value="All" selected>All</option>
+              <option *ngFor="let c of companies" value="{{c.name}}">{{c.name}}</option>
+            </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form method="post" enctype="multipart/form-data" id="form-product" class="">
+            <div class="table-responsive">
+                <h4>Invoices</h4>
+                <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+
+                    <thead>
+                        <tr>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">#</th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Type
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Invoice #
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Invoiced Date
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Store
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Village
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Balance
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Amount to Pay
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of invoices">
+                            <ng-container *ngIf="item.visible">
+                                <td class="text-center"> <input type="checkbox" value="{{item.invnum}}" (change)="selectElement($event)">
+                                </td>
+                                <td class="text-center">Order</td>
+                                <td class="text-center" class="invnum" data-toggle="modal" data-target="#detailModal" (click)="showDetails(item)">{{ item.invnum }}</td>
+                                <td class="text-center">{{ item.invdate }}</td>
+                                <td class="text-center">{{ item.store }}</td>
+                                <td class="text-center">{{ item.village }}</td>
+                                <td class="text-center">{{ item.balance }}</td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="item.checked">
+                                        <input type="text" name="{{item.invnum}}" [(ngModel)]="item.amounttopay" (change)="calculateSum()">
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                        </tr>
+                        <tr>
+                            <td class="text-center">{{tickCount}}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center">{{invoiceCount}}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center">{{sumBalance}}</td>
+                            <td class="text-center">{{sumAmount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h4 class="modal-title">Order Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>InvNum:</strong> </div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.invnum}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>InvDate</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.invdate}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>Store</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.store}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>Village</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.village}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>Code</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.code}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>Period</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.period}}</span></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>MonthsOld</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.monthsold}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>Value</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>${{selectedItem.value}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>GST</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>${{selectedItem.gst}}</span></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>PONum</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.ponum}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>CommonName</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>{{selectedItem.commonname}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>Balance</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>${{selectedItem.balance}}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-4 item_field"><strong>InvoiceTotal</strong></div>
+                                <div class="col-sm-4 col-xs-4"><span>${{selectedItem.invoicetotal}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <br>
+        <div class="form-group" *ngIf="user.accounttype === 'super' ">
+            <button type="button" id="button-delete" class="btn btn-primary"><i class="fa fa-delete"></i> Delete Selected</button>
+            <button type="button" id="button-send" class="btn btn-primary pull-right" (click)="sendEmail()"><i class="fa fa-delete"></i> Send remittance advice</button>
+        </div>
+        <div class="form-group" *ngIf="user.accounttype === 'staff' || user.accounttype === 'customer' ">
+            <button *ngIf="order_permission.delete" type="button" id="button-delete" class="btn btn-primary"><i class="fa fa-delete"></i> Delete Selected</button>
+            <button *ngIf="order_permission.create || order_permission.edit || order_permission.delete || order_permission.view" type="button" id="button-send" class="btn btn-primary pull-right"><i class="fa fa-delete"></i> Send remittance advice</button>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1">
+                <label class="control-label" for="summaries-filter">Company / Village</label>
+                <select name="summaries-filter" id="summaries-filter" class="form-control" (change)="filterSummaries($event)" [(ngModel)]="sVillage">
+          <option value="All" selected>All</option>
+          <option *ngFor="let c of companies" value="{{c.name}}">{{c.name}}</option>
+        </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <h4>Summary</h4>
+            <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+
+                <thead>
+                    <tr>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">#</th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Village
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Code
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Older
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">3 Months
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">2 Months
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">1 Month
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Current
+                        </th>
+                        <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let sum of oSummaries">
+                        <ng-container *ngIf="sum.visible">
+                            <td class="text-center"> <input type="checkbox" value="">
+                            </td>
+                            <td class="text-center">{{sum.village}}</td>
+                            <td class="text-center">{{sum.code}}</td>
+                            <td class="text-center">{{sum.older? sum.older: 0}}</td>
+                            <td class="text-center">{{sum.three? sum.three: 0}}</td>
+                            <td class="text-center">{{sum.two? sum.two: 0}}</td>
+                            <td class="text-center">{{sum.one? sum.one: 0}}</td>
+                            <td class="text-center">{{sum.current? sum.current: 0}}</td>
+                            <td class="text-center">{{(sum.older?sum.older:0)+(sum.three?sum.three:0)+(sum.two?sum.two:0)+(sum.one?sum.one:0)+(sum.current?sum.current:0)}}</td>
+                        </ng-container>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                        </td>
+                        <td class="text-center">Total</td>
+                        <td class="text-center"></td>
+                        <td class="text-center">{{summariesTotal.older}}</td>
+                        <td class="text-center">{{summariesTotal.three}}</td>
+                        <td class="text-center">{{summariesTotal.two}}</td>
+                        <td class="text-center">{{summariesTotal.one}}</td>
+                        <td class="text-center">{{summariesTotal.current}}</td>
+                        <td class="text-center">{{summariesTotal.sumtotal}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+</div>

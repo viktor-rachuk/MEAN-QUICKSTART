@@ -1,0 +1,239 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Flooring Order Request</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Flooring Order Request</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+<div class="row">
+    <div class="panel panel-card recent-activites">
+        <div class="col-sm-8 col-sm-offset-2">
+            <h4>Client Information</h4>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel-body">
+                <div class="">
+                    <table id="basic-datatables" class="table table-bordered">
+                        <tr>
+                            <td class="title td-title">Account Name</td>
+                            <td class="title">
+                                <div class="form-group">
+                                    <input type="text" name="name" class="order-input">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title td-title">Summerset Village</td>
+                            <td class="title">
+                                <div class="form-group" *ngIf="companies.length === 1">
+                                    {{companies[0].name}}
+                                </div>
+                                <div class="form-group">
+                                    <select name="companies" class="form-control" (change)="selectCompany($event)" *ngIf="companies.length > 1">
+                                        <option value="" selected></option>
+                                        <option *ngFor="let item of companies" value="{{item._id}}">{{item.name}}</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title td-title">Name</td>
+                            <td class="title">
+                                <input type="text" name="inputmob" class="order-input" [(ngModel)]="user.username" #name="ngModel">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title td-title">Email</td>
+                            <td class="title">
+                                <input type="text" name="email" class="order-input" [(ngModel)]="user.email" #email="ngModel">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title td-title">Phone</td>
+                            <td class="title">
+                                <div class="col-md-6">
+                                    <label for="inputwk">Wk:</label>
+                                    <input type="text" name="inputwk" style="border: none;margin: 0;" [(ngModel)]="user.user_info.phone" *ngIf="user.accounttype === 'staff' || user.accounttype === 'customer'">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputmob">Mob:</label>
+                                    <input type="text" name="inputmob" style="border: none;margin: 0;" [(ngModel)]="user.user_info.mobile" *ngIf="user.accounttype === 'staff' || user.accounttype === 'customer'">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h4>Flooring Contractor Information</h4>
+    </div>
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel-body">
+            <div class="">
+                <table id="basic-datatables" class="table table-bordered">
+                    <tr>
+                        <td class="title td-title">Store</td>
+                        <td class="title">
+                            <ng-container *ngIf="assigned_stores.length > 1">
+                                <div class="form-group">
+                                    <select name="stores" id="input-status" class="form-control" (change)="selectStore($event)">
+                                        <option value="" selected></option>
+                                        <option *ngFor="let item of assigned_stores" value="{{item._id}}">{{item.store_title}}</option>
+                                    </select>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="assigned_stores.length == 1">
+                                {{assigned_stores[0].store_title}}
+                            </ng-container>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Address</td>
+                        <td class="title">
+                            <div class="col-md-6" *ngIf="store_address.address1&&store_address.address2&&store_info.region&&store_info.city">
+                                {{store_address.address1}} {{store_address.address2}} {{','}} {{store_info.city}} {{','}} {{store_info.region}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Contact Name</td>
+                        <td class="title"><input type="text" name="inputmob" [(ngModel)]="key_staff.username" class="order-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Email</td>
+                        <td class="title"><input type="text" name="inputmob" [(ngModel)]="staff_info.email" class="order-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Phone</td>
+                        <td class="title">
+                            <div class="col-md-6">
+                                <label for="inputwk">Wk:</label>
+                                <input type="text" name="inputwk" style="border: none;margin: 0;" [(ngModel)]="staff_info.phone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputmob">Mob:</label>
+                                <input type="text" name="inputmob" style="border: none;margin: 0;" [(ngModel)]="staff_info.mobile">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h4>Project Details</h4>
+    </div>
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel-body">
+            <div class="">
+                <table id="basic-datatables" class="table table-bordered">
+                    <tr>
+                        <td class="title td-title">Order Number</td>
+                        <td class="title"><input type="text" name="inputmob" class="order-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Order Date</td>
+                        <td class="title"><input type="date" name="inputmob"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Prefered Install Date</td>
+                        <td class="title"><input type="date" name="inputmob"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Quote Required</td>
+                        <td class="title">
+                            <label for="inputmobyes" style="padding-right: 30px;"><input type="radio" id="inputmobyes" name="inputmob"  >YES</label>
+                            <label for="inputmobno"><input type="radio" name="inputmob"  id="inputmobno" >NO</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Unit Type</td>
+                        <td class="title">
+                            <input type="text" name="unitType" class="order-input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Plan Type</td>
+                        <td class="title"><input type="text" name="inputmob" class="order-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Unit Number</td>
+                        <td class="title"><input type="text" name="inputmob" class="order-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Colour Scheme</td>
+                        <input type="text" name="colScheme" class="order-input">
+                        <td class="title">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Areas Required</td>
+                        <td class="title" style="width:100%;">
+                            <table style="width:100%;">
+                                <tr style="width:100%;">
+                                    <td class="title"><input type="checkbox" name="create_store" (change)="selectEntireUnit()"><label for="">Entire Unit</label></td>
+                                    <td class="title"><input type="checkbox" name="create_store" [checked]="areas_required.carpet" (change)="areas_required.carpet = !areas_required.carpet"><label for="">Carpet</label></td>
+                                    <td class="title"><input type="checkbox" name="create_store" [checked]="areas_required.kitchen" (change)="areas_required.kitchen = !areas_required.kitchen"><label for="">Kitchen/Entry</label></td>
+                                </tr>
+                                <tr style="width:100%;">
+                                    <td class="title"><input type="checkbox" name="create_store" [checked]="areas_required.other" (change)="areas_required.other = !areas_required.other"><label for="">Other</label></td>
+                                    <td class="title"><input type="checkbox" name="create_store" [checked]="areas_required.bathroom" (change)="areas_required.bathroom = !areas_required.bathroom"><label for="">Bathroom</label></td>
+                                    <td class="title"><input type="checkbox" name="create_store" [checked]="areas_required.laundry" (change)="areas_required.laundry = !areas_required.laundry"><label for="">Laundry</label></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title td-title">Special Instructions</td>
+                        <td class="title"><input type="text" name="inputmob" class="order-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="title"></td>
+                        <td class="title">
+                            <button type="button" id="button-filter" class="btn btn-primary pull-right" (click)="sendEmail()"><i class="fa fa-delete"></i> Create Order</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <br>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel-body">
+            <table  class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+        <thead>
+            <tr>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+                Carpet
+              </th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Vinyl/Vinyl Tile</th>
+              <th id="custom-sort" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2">Bathroom Floor</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Bathroom Wall</th>
+              <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="5">Laundry</th>
+            </tr>
+        </thead>
+    </table>
+        </div>
+    </div>
+</div>
+
+
+ -->
