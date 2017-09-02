@@ -1,0 +1,81 @@
+<!--For Super User-->
+<aside class="sidebar" *ngIf="user.accounttype  === 'super'">
+    <nav class="sidebar-nav">
+        <ul class="metismenu" id="menu">
+            <li class="active">
+                <a routerLink="/dashboard"><i class="icon-grid"></i> <span class="nav-label">Dashboard</span></a>
+            </li>
+            <li>
+                <a [routerLink]="['/users']"><i class="fa fa-users"></i> <span class="nav-label">Users</span></a>
+            </li>
+            <li>
+                <a [routerLink]="['/roles']"><i class="fa fa-edit"></i> <span class="nav-label">User Roles</span></a>
+            </li>
+            <li>
+                <a [routerLink]="['/stores']"><i class="fa fa-building"></i> <span class="nav-label">Stores</span></a>
+            </li>
+            <li>
+                <a [routerLink]="['/companies']"><i class="fa fa-bank"></i> <span class="nav-label">Companies</span></a>
+            </li>
+            <li>
+                <a [routerLink]="['/orders']"><i class="fa fa-shopping-bag"></i> <span class="nav-label">Orders/Invoices</span></a>
+            </li>
+            <li style="cursor: pointer;">
+                <a [routerLink]="[activatedRoute]"><i class="fa fa-cogs"></i> <span class="nav-label">Form Settings</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li><a [routerLink]="['/uni-types']">Unit Type</a></li>
+                    <li><a [routerLink]="['/col-schema']">Colour Schemes</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+<!--For staff  and customer -->
+<aside class="sidebar" *ngIf="user.accounttype  === 'staff'">
+    <nav class="sidebar-nav">
+        <ul class="metismenu" id="menu">
+            <li class="active" *ngIf="display_dashboard">
+                <a routerLink="/dashboard"><i class="icon-grid"></i> <span class="nav-label">Dashboard</span></a>
+            </li>
+            <li *ngIf="customer_permission.create || customer_permission.delete || customer_permission.edit || customer_permission.view || staff_permission.create || staff_permission.edit || staff_permission.delete || staff_permission.view">
+                <a [routerLink]="['/users']"><i class="fa fa-users"></i> <span class="nav-label">Users</span></a>
+            </li>
+            <li *ngIf="role_permission.create || role_permission.edit || role_permission.delete || role_permission.view">
+                <a [routerLink]="['/roles']"><i class="fa fa-edit"></i> <span class="nav-label">User Roles</span></a>
+            </li>
+            <li *ngIf="store_permission.create || store_permission.edit || store_permission.delete || store_permission.view">
+                <a [routerLink]="['/stores']"><i class="fa fa-building"></i> <span class="nav-label">Stores</span></a>
+            </li>
+            <li *ngIf="company_permission.create || company_permission.edit || company_permission.delete || company_permission.view">
+                <a [routerLink]="['/companies']"><i class="fa fa-bank"></i> <span class="nav-label">Companies</span></a>
+            </li>
+            <li *ngIf="order_permission.create || order_permission.edit || order_permission.delete || order_permission.view">
+                <a [routerLink]="['/orders']"><i class="fa fa-shopping-bag"></i> <span class="nav-label">Orders/Invoices</span></a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+<aside class="sidebar" *ngIf="user.accounttype === 'customer' ">
+    <nav class="sidebar-nav">
+        <ul class="metismenu" id="menu">
+            <li class="active" *ngIf="display_dashboard">
+                <a routerLink="/dashboard"><i class="icon-grid"></i> <span class="nav-label">Dashboard</span></a>
+            </li>
+            <li *ngIf="customer_permission.create || customer_permission.delete || customer_permission.edit || customer_permission.view || staff_permission.create || staff_permission.edit || staff_permission.delete || staff_permission.view">
+                <a [routerLink]="['/users']"><i class="fa fa-users"></i> <span class="nav-label">Users</span></a>
+            </li>
+            <li *ngIf="role_permission.create || role_permission.edit || role_permission.delete || role_permission.view">
+                <a [routerLink]="['/roles']"><i class="fa fa-edit"></i> <span class="nav-label">User Roles</span></a>
+            </li>
+            <li *ngIf="store_permission.create || store_permission.edit || store_permission.delete || store_permission.view">
+                <a [routerLink]="['/stores']"><i class="fa fa-building"></i> <span class="nav-label">Stores</span></a>
+            </li>
+            <li *ngIf="company_permission.create || company_permission.edit || company_permission.delete || company_permission.view">
+                <a [routerLink]="['/companies']"><i class="fa fa-bank"></i> <span class="nav-label">Companies</span></a>
+            </li>
+            <li *ngIf="order_permission.create || order_permission.edit || order_permission.delete || order_permission.view">
+                <a [routerLink]="['/orders']"><i class="fa fa-shopping-bag"></i> <span class="nav-label">Orders/Invoices</span></a>
+            </li>
+        </ul>
+    </nav>
+</aside>

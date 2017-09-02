@@ -1,0 +1,68 @@
+<ng-template #itemTemplate let-item="item" let-onCollapseExpand="onCollapseExpand" let-onCheckedChange="onCheckedChange">
+    <div class="form-check">
+        <i *ngIf="item.children" (click)="onCollapseExpand()" aria-hidden="true" class="fa" [class.fa-caret-right]="item.collapsed" [class.fa-caret-down]="!item.collapsed"></i>
+        <label class="form-check-label">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="item.checked" (change)="selectItem($event)" [disabled]="item.disabled" [value]="item.value" />
+            <ng-container *ngIf="user.accounttype === 'super'" >
+                <a [routerLink]="['/companies', item.value]" class="company_title">{{item.text}}</a>
+            </ng-container>
+            <ng-container *ngIf="user.accounttype ==='staff' || user.accounttype==='customer'" >
+                <a [routerLink]="['/companies', item.value]" *ngIf="company_permission.edit" class="company_title">{{item.text}}</a>
+                <ng-container *ngIf="!company_permission.edit"><span class="company_title">{{item.text}}</span></ng-container>
+            </ng-container>
+        </label>
+    </div>
+</ng-template>
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Company Management</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Company Management</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <ng-container *ngIf="user.accounttype === 'super'">
+                <a [routerLink]="['/companies/create']" class="btn btn-primary"><i class="fa fa-bank"></i> Register New Company</a>
+            </ng-container>
+            <ng-container *ngIf="user.accounttype === 'staff' || user.accounttype === 'customer'">
+                <a [routerLink]="['/companies/create']" *ngIf="company_permission.create" class="btn btn-primary"><i class="fa fa-bank"></i> Register New Company</a>
+            </ng-container>
+        </div>
+        <div class="col-md-12 col-sm-12">
+            <ng-container *ngIf="user.accounttype === 'super'">
+                <ngx-treeview [config]="config" [items]="items" [itemTemplate]="itemTemplate" (selectedChange)="onSelectedChange($event)">
+                </ngx-treeview>
+            </ng-container>
+            <ng-container *ngIf="user.accounttype ==='staff' || user.accounttype==='customer'">
+                <ngx-treeview *ngIf="company_permission.create || company_permission.edit || company_permission.delete || company_permission.view" [config]="config" [items]="items" [itemTemplate]="itemTemplate" (selectedChange)="onSelectedChange($event)">
+                </ngx-treeview>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="form-group" *ngIf=" user.accounttype === 'super'">
+            <button type="button" id="button-filter" class="btn btn-primary" (click)="deleteComapnies()"><i class="fa fa-delete"></i> Delete Selected</button>
+            <button type="button" id="button-filter" class="btn btn-primary " (click)="deactivateComapnies()"><i class="fa fa-delete"></i> Deactivate Selected</button>
+            <button type="button" id="button-filter" class="btn btn-primary " (click)="reactivateComapnies()"><i class="fa fa-delete"></i> Reactivate Selected</button>
+        </div>
+        <div class="form-group" *ngIf=" user.accounttype === 'staff' || user.accounttype === 'customer' ">
+            <button type="button" *ngIf="company_permission.delete" id="button-filter" class="btn btn-primary " (click)="deactivateComapnies()"><i class="fa fa-delete"></i> Deactivate Selected</button>
+            <button type="button" *ngIf="company_permission.delete" id="button-filter" class="btn btn-primary " (click)="reactivateComapnies()"><i class="fa fa-delete"></i> Reactivate Selected</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+.parent_list {
+    list-style: none;
+    padding-left: 0px;
+}
+
+#tree_sign {
+    font-size: 20px;
+}
+
+.parent_list {
+    padding-left: 0px;
+}
+
+.company_title {
+    font-size: 16px;
+}

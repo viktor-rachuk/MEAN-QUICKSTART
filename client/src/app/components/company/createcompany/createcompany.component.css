@@ -1,0 +1,29 @@
+ul {
+	border-bottom: 1px solid;
+	list-style: none;
+}
+.villages_list {
+	height:200px;
+	width:100%;
+	overflow:hidden;
+	overflow-y:scroll;
+	list-style:none;
+}
+
+.sub_list {
+	border: none;
+}
+
+.child {
+	cursor: pointer;
+	color: blue;
+}
+
+.modal-header {
+	background-color: #01a8fe;
+	color: white;
+}
+
+.modal-content {
+	border-radius: 0px;
+}

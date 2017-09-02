@@ -1,0 +1,237 @@
+<ng-template #itemTemplate let-item="item" let-onCollapseExpand="onCollapseExpand" let-onCheckedChange="onCheckedChange">
+    <div class="form-check">
+        <i *ngIf="item.children" (click)="onCollapseExpand()" aria-hidden="true" class="fa" [class.fa-caret-right]="item.collapsed" [class.fa-caret-down]="!item.collapsed"></i>
+        <label class="form-check-label">
+                    <ng-container *ngIf="user.accounttype === 'super'" >
+                        <a href="/#/companies/{{item.value}}">{{item.text}}</a>
+                    </ng-container>
+                    <ng-container *ngIf="user.accounttype ==='staff' || user.accounttype==='customer'" >
+                        <a href="/#/companies/{{item.value}}" *ngIf="company_permission.edit" >{{item.text}}</a>
+                        <ng-container *ngIf="!company_permission.edit">{{item.text}}</ng-container>
+                    </ng-container>
+                </label>
+    </div>
+</ng-template>
+
+<!-- page title -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Create New Company</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Create New Company</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+<div class="hr-line-dashed"></div>
+<div class="row">
+    <form class="form-horizontal group-border stripped" #editCompanyForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="panel panel-card margin-b-30">
+                <div class="well">
+                    <h4 class="mb-xlg">Company Information</h4>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-lg-4 col-md-4 col-md-offset-4">
+                                <img [src]="logoUrl" alt="Preview" class="img-thumbnail img-responsive">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Logo</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="file" name="logo" (change)="readUrl($event)">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': name.touched && name.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Company Name</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="name" placeholder="Enter Company Name" minlength="4" class="form-control" [(ngModel)]="currentCompany.name" #name="ngModel" required>
+                            </div>
+                        </div>
+                        <h5 class="mb-xlg">Address Information</h5>
+                        <div class="form-group" [ngClass]="{ 'has-error': address1.touched && address1.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Address</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" placeholder="" class="form-control" name="address1" [(ngModel)]="address.address1" #address1="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': address2.touched && address2.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label"></label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" class="form-control" name="address2" [(ngModel)]="address.address2" #address2="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': region.touched && region.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Region</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="region" [(ngModel)]="company_info.region" (change)="selectRegion($event)" #region="ngModel" required>
+                                <option *ngFor="let reg of regions" [value]="reg">{{ reg }}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': city.touched && city.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">City</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="city" [(ngModel)]="company_info.city" name="city" #city="ngModel" required>
+                                <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': post_code.touched && post_code.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Post Code</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" placeholder="Enter Post Code" name="post_code" class="form-control" [(ngModel)]="company_info.postcode" #post_code="ngModel" required>
+                            </div>
+                        </div>
+                        <h5 class="mb-xlg">Additional Information</h5>
+                        <div class="form-group" [ngClass]="{ 'has-error': account_email.touched && account_email.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Accounts Email</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="email" placeholder="Enter email" class="form-control" [(ngModel)]="currentCompany.email" #account_email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': customer_type.touched && customer_type.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Customer Type</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="customer_type" class="form-control" [(ngModel)]="company_info.customer_type" #customer_type="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Parent</label>
+                            <div class="col-lg-8 col-md-8">
+                                <select class="fancy-select form-control" name="parent" [(ngModel)]="currentCompany.parent" #parent="ngModel" (click)="selectParent($event)">
+                                <option value="" selected=""></option>
+                                <option *ngFor="let item of companies" [value]="item._id">{{ item.name }}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Assigned To Stores</label>
+                            <div class="col-lg-8 col-md-8">
+                                <ul class="villages_list">
+                                    <li *ngFor="let item of stores">
+                                        <input type="checkbox" [value]="item" [checked]="item.checked" (change)="selectStore(item, $event)">
+                                        <span>{{item.store_title}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Key Contact</label>
+                            <div class="col-lg-8 col-md-8">
+                                <ul class="villages_list">
+                                    <li *ngFor="let item of key_contacts">
+                                        <ng-container *ngFor="let store of stores">
+                                            <ng-container *ngIf="item.store === store._id">
+                                                <span>{{store.store_title}}</span>
+                                                <ul class="sub_list">
+                                                    <li *ngFor="let staff of store.assigned_users">
+                                                        <ng-container *ngFor="let user of users">
+                                                            <ng-container *ngIf="user._id === staff">
+                                                                <input type="radio" [checked]="user._id === item.key_staff" [name]="store.store_title" [value]="user._id" (change)="selectKeyContact(store._id, $event)">
+                                                                <span>{{user.username}}</span>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </li>
+                                                </ul>
+                                            </ng-container>
+                                        </ng-container>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="panel panel-card margin-b-30">
+                <div class="well">
+                    <h4 class="mb-xlg">Account Information</h4>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Bank Account</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="bank_account" placeholder="Enter Bank Account" minlength="4" class="form-control" [(ngModel)]="account_info.bank_account" #bank_account="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">GST Number</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="gst_number" placeholder="Enter GST Number" minlength="4" class="form-control" [(ngModel)]="account_info.gst_number" #gst_number="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error': payable_email.touched && payable_email.invalid }">
+                            <label class="col-lg-4 col-md-4 control-label">Accounts Payable Email</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="text" name="payable_email" placeholder="Enter Accounts Payable Email" class="form-control" [(ngModel)]="account_info.payable_email" #payable_email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Is a debtor?</label>
+                            <div class="col-lg-8 col-md-8">
+                                <input type="checkbox" name="is_debtor" [checked]="currentCompany.is_debtor" (change)="currentCompany.is_debtor = !currentCompany.is_debtor">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-md-4 control-label">Company Structure</label>
+                            <div class="col-lg-8 col-md-8">
+                                <ngx-treeview [config]="config" [items]="items" [itemTemplate]="itemTemplate">
+                                </ngx-treeview>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h4 class="modal-title">Company Details</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong>Name:</strong> </div>
+                                            <div class="col-sm-4 col-xs-4"><span>{{child.name}}</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong>Is Debtor?</strong></div>
+                                            <div class="col-sm-4 col-xs-4"><input type="checkbox" [checked]="child.is_debtor" disabled></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong>Email</strong></div>
+                                            <div class="col-sm-4 col-xs-4"><span>{{child.email}}</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong>Region</strong></div>
+                                            <div class="col-sm-4 col-xs-4"><span>{{child_info.region}}</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong>City</strong></div>
+                                            <div class="col-sm-4 col-xs-4"><span>{{child_info.city}}</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong>Address</strong></div>
+                                            <div class="col-sm-4 col-xs-4"><span>{{child_address.address1}}</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-xs-4 item_field"><strong></strong></div>
+                                            <div class="col-sm-4 col-xs-4"><span>{{child_address.address2}}</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" [disabled]="!editCompanyForm.form.valid">Submit</button>
+                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button class="btn btn-info btn-primary" (click)="cancel()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
