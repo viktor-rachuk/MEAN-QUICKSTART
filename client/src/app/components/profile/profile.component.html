@@ -1,0 +1,9 @@
+<ng-container *ngIf="account_type === 'staff'">
+	<staff-profile></staff-profile>
+</ng-container>
+<ng-container *ngIf="account_type ==='customer'">
+	<customer-profile></customer-profile>
+</ng-container>
+<ng-container *ngIf="account_type === 'super'">
+	<super-profile></super-profile>
+</ng-container>

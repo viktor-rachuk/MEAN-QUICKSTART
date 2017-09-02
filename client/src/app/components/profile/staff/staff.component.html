@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-title">
+      <div class="row">
+        <h4 class="pull-left">Your Profile</h4>
+        <ol class="breadcrumb pull-right">
+          <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+          <li>Your Profile</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end .page title-->
+
+<!-- end .page title-->
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="panel panel-card margin-b-30">
+      <div class="well">
+        <div class="panel-body">
+          <form class="form-horizontal group-border stripped" name="form" #userForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="form-group" >
+              <label class="col-lg-2 col-md-3 control-label">Name</label>
+              <div class="col-lg-5 col-md-5">
+                <input type="text" name="username" placeholder="Enter Your UserName" minlength="4" maxlength="24" class="form-control" [(ngModel)]="user.username"
+                  #username="ngModel"  required>
+              </div>
+            </div>
+            <div class="form-group" >
+              <label class="col-lg-2 col-md-3 control-label">Email</label>
+              <div class="col-lg-5 col-md-5">
+                <input type="email" name="email" placeholder="Enter email" class="form-control" [(ngModel)]="user.email" #email="ngModel"
+                  [email]="true" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-2 col-md-3 control-label">Phone</label>
+              <div class="col-lg-5 col-md-5">
+                <input type="text" name="phone" placeholder="Phone number" class="form-control" [(ngModel)]="user_info.phone" #phone="ngModel"
+                  required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-2 col-md-3 control-label">Mobile</label>
+              <div class="col-lg-5 col-md-5">
+                <input type="text" name="mobile" placeholder="Phone number" class="form-control" [(ngModel)]="user_info.mobile" #mobile="ngModel"
+                  required>
+              </div>
+            </div>
+            <div class="form-group"  [ngClass]="{ 'has-error' : password.invalid && password.touched }">
+              <label class="col-lg-2 col-md-3 control-label">Password</label>
+              <div class="col-lg-3 col-md-3">
+                <input type="Password" name="password" placeholder="" class="form-control" [(ngModel)]="user.password" #password="ngModel">
+              </div>
+            </div>
+            <div class="form-group"  [ngClass]="{ 'has-error' : confirmPassword.invalid && confirmPassword.touched }">
+              <label class="col-lg-2 col-md-3 control-label">Confirm Password</label>
+              <div class="col-lg-3 col-md-3">
+                <input type="Password" name="confirmPassword" placeholder="" class="form-control" [(ngModel)]="user.confirmPassword" #confirmPassword="ngModel">
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group text-center">
+                <button type="button" class="btn btn-info btn-primary" (click)="cancel()">
+                    Cancel
+                </button>
+              <button type="submit" class="btn btn-info  btn-primary">
+                Save
+              </button>
+
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

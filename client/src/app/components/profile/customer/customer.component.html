@@ -1,0 +1,117 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">Your Profile</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>Your Profile</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+    <form class="form-horizontal group-border stripped" name="form" #userForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="col-md-6 margin-b-30">
+            <div class="profile-overview">
+                <div class="profile-edit">
+                    <h4 class="mb-xlg">Personal Information</h4>
+                    <fieldset>
+                        <div class="form-group" [ngClass]="{ 'has-error' : username.invalid && username.touched }">
+                            <label class="col-md-4 control-label" for="profileName">Name</label>
+                            <div class="col-md-8">
+                                <input type="text" name="username" id="profileName" placeholder="Enter Your UserName" minlength="4" maxlength="24" class="form-control" [(ngModel)]="customer.username" #username="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : email.invalid && email.touched }">
+                            <label class="col-md-4 control-label" for="profileEmail">Email</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profileEmail" name="email" placeholder="Enter email" class="form-control" [(ngModel)]="customer.email" #email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : phone.invalid && phone.touched }">
+                            <label class="col-md-4 control-label" for="profilePhone">Phone</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profilePhone" name="phone" placeholder="Phone number" class="form-control" [(ngModel)]="user_info.phone" #phone="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : mobile.invalid && mobile.touched }">
+                            <label class="col-md-4 control-label" for="profileMobile">Mobile</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profileMobile" name="mobile" placeholder="Mobile number" class="form-control" [(ngModel)]="user_info.mobile" #mobile="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : position.invalid && position.touched }">
+                            <label class="col-md-4 control-label" for="profilePosition">Position</label>
+                            <div class="col-md-8">
+                                <input type="text" id="profilePosition" placeholder="Enter Position" class="form-control" name="position" [(ngModel)]="customer_info.position" #position="ngModel">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{ 'has-error' : prefered_contact.invalid && prefered_contact.touched }">
+                            <label class="col-md-4 control-label" for="profilePreferContactMethod">Prefered Contact Method</label>
+                            <div class="col-md-8">
+                                <select class="fancy-select form-control" id="profilePreferContactMethod" name="prefered_contact" [(ngModel)]="customer_info.prefered_contact" #prefered_contact="ngModel">
+                    <option value="phone">Phone</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="email">Email</option>
+                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6 margin-b-30">
+            <div class="profile-edit">
+                <hr class="dotted tall">
+                <fieldset>
+                    <div class="avtar text-center">
+                        <img [src]="photoUrl" alt="Preview" class="img-thumbnail img-responsive" style="width:30%; height: 30%;">
+                        <hr>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-md-4 control-label">Photo</label>
+                        <div class="col-lg-3 col-md-4">
+                            <input type="file" (change)="readPhoto($event)" placeholder="Upload logo..." />
+                        </div>
+                    </div>
+                </fieldset>
+                <h4 class="mb-xlg">Permission & Access</h4>
+                <fieldset>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="profilePassword">Password</label>
+                        <div class="col-md-8">
+                            <input type="password" id="profilePassword" placeholder="" class="form-control" name="password" [(ngModel)]="customer.password" #password="ngModel">
+                        </div>
+                        <div *ngIf="userForm.submitted && !password.valid" class="help-block">Pasword is </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="profileRepeatPassword">Confirm Password</label>
+                        <div class="col-md-8">
+                            <input type="password" id="profileRepeatPassword" placeholder="" class="form-control" name="confirmpassword" [(ngModel)]="customer.confirm_password" #confirmpassword="ngModel">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div *ngIf="(customer.password !== customer.confirm_password) && (confirmpassword.dirty|| confirmpassword.touched )" class="col-md-offset-3 col-md-8 alert alert-danger">
+                            <div>The passwords entered do not match</div>
+                        </div>
+                    </div>
+
+                </fieldset>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-9 col-md-offset-3">
+                            <button type="submit" class="btn btn-primary" [disabled]="!userForm.form.valid">Submit</button>
+                            <button type="button" class="btn btn-info btn-primary" (click)="cancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
