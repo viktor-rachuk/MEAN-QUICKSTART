@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">User Role</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li>User Role</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group" *ngIf=" user.accounttype === 'super' ">
+            <a [routerLink]="['/createrole']" class="btn btn-primary"><i class="fa fa-user"></i> Create New Role</a>
+        </div>
+        <div class="form-group" *ngIf=" user.accounttype === 'staff' || user.accounttype === 'customer' ">
+            <a [routerLink]="['/createrole']" class="btn btn-primary" *ngIf=" role_permission.create "><i class="fa fa-user"></i> Create New Role</a>
+        </div>
+        <div class="col-md-12 col-sm-12s">
+            <div class="table-responsive">
+                <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+                                #
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Role Name</th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of roles">
+                            <td class="title">
+                                <input type="checkbox" name="select" value="{{item._id}}" (change)="selectElement($event)" />
+                            </td>
+                            <td class="title">
+                                <ng-container *ngIf="user.accounttype === 'super'">
+                                    <a [routerLink]="['/role', item._id]">{{ item.role_name }}</a>
+                                </ng-container>
+                                <ng-container *ngIf="user.accounttype === 'staff' || user.accounttype === 'customer'">
+                                    <a [routerLink]="['/role', item._id]" *ngIf="role_permission.edit">{{ item.role_name }}</a>
+                                    <span *ngIf="!role_permission.edit">{{ item.role_name }}</span>
+                                </ng-container>
+                            </td>
+                            <td class="title">
+                                <span class="label label-success" *ngIf="item.status">active</span>
+                                <span class="label label-danger" *ngIf="!item.status">inactive</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="form-group" *ngIf=" user.accounttype === 'super'">
+            <button type="button" id="button-filter" class="btn btn-primary " (click)="deleteRoles()"><i class="fa fa-delete"></i> Delete Selected</button>
+            <button type="button" id="button-filter" class="btn btn-primary " (click)="deactivateRoles()"><i class="fa fa-delete"></i> Deactivate Selected</button>
+            <button type="button" id="button-filter" class="btn btn-primary " (click)="reactivateRoles()"><i class="fa fa-delete"></i> Reactivate Selected</button>
+        </div>
+        <div class="form-group" *ngIf=" user.accounttype === 'staff' || user.accounttype === 'customer' ">
+            <button type="button" *ngIf="role_permission.delete" id="button-filter" class="btn btn-primary " (click)="deactivateRoles()"><i class="fa fa-delete"></i> Deactivate Selected</button>
+            <button *ngIf="role_permission.delete" type="button" id="button-filter" class="btn btn-primary " (click)="reactivateRoles()"><i class="fa fa-delete"></i> Reactivate Selected</button>
+        </div>
+    </div>
+</div>

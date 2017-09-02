@@ -1,0 +1,132 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-title">
+            <div class="row">
+                <h4 class="pull-left">User Role Settings</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a href="javascript: void(0);"><i class="fa fa-home"></i></a></li>
+                    <li> User Role Settings</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end .page title-->
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="col-lg-5 col-md-5">
+            <input type="text" name="rolename" placeholder="Enter Rolename" minlength="3" maxlength="24" class="form-control" [(ngModel)]="currentRole.role_name" #rolename="ngModel" required>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="col-md-12 col-sm-12">
+            <div class="table-responsive">
+                <table class="tablesaw" data-tablesaw-sortable data-tablesaw-sortable-switch>
+
+                    <thead>
+                        <tr>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist">
+                                Permitted Action
+                            </th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-sortable-default-col data-tablesaw-priority="3">Create</th>
+                            <th id="custom-sort" scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2">Edit</th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="4">Deactivate</th>
+                            <th scope="col" data-tablesaw-sortable-col data-tablesaw-priority="5">View Only</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="title">
+                                Manage Staff Users
+                            </td>
+                            <td class="title"><input type="checkbox" name="create_staff" [checked]="staff.create" (change)="staff.create = !staff.create" /></td>
+                            <td class="title"><input type="checkbox" name="edit_staff" [checked]="staff.edit" (change)="staff.edit = !staff.edit"></td>
+                            <td class="title"><input type="checkbox" name="delete_staff" [checked]="staff.delete" (change)="staff.delete = !staff.delete"></td>
+                            <td class="title"><input type="checkbox" name="view_staff" [checked]="staff.view" (change)="staff.view = !staff.view"></td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                Manage Customer Users
+                            </td>
+                            <td class="title"><input type="checkbox" name="create_customer" [checked]="customer.create" (change)="customer.create = !customer.create"></td>
+                            <td class="title"><input type="checkbox" name="edit_customer" [checked]="customer.edit" (change)="customer.edit = !customer.edit"></td>
+                            <td class="title"><input type="checkbox" name="delete_customer" [checked]="customer.delete" (change)="customer.delete = !customer.delete"></td>
+                            <td class="title"><input type="checkbox" name="view_customer" [checked]="customer.view" (change)="customer.view = !customer.view"></td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                Manage Stores
+                            </td>
+                            <td class="title"><input type="checkbox" name="create_store" [checked]="store.create" (change)="store.create = !store.create"></td>
+                            <td class="title"><input type="checkbox" name="edit_store" [checked]="store.edit" (change)="store.edit = !store.edit"></td>
+                            <td class="title"><input type="checkbox" name="delete_store" [checked]="store.delete" (change)="store.delete = !store.delete"></td>
+                            <td class="title"><input type="checkbox" name="view_store" [checked]="store.view" (change)="store.view = !store.view"></td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                Manage Orders
+                            </td>
+                            <td class="title"><input type="checkbox" name="create_order" [checked]="order.create" (change)="order.create  = !order.create"></td>
+                            <td class="title"><input type="checkbox" name="edit_order" [checked]="order.edit" (change)="order.edit = !order.edit"></td>
+                            <td class="title"><input type="checkbox" name="delete_order" [checked]="order.delete" (change)="order.delete = !order.delete"></td>
+                            <td class="title"><input type="checkbox" name="view_order" [checked]="order.view" (change)="order.view = !order.view"></td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                Manage User Roles
+                            </td>
+                            <td class="title"><input type="checkbox" name="create_role" [checked]="role.create" (change)="role.create = !role.create"></td>
+                            <td class="title"><input type="checkbox" name="edit_role" [checked]="role.edit" (change)="role.edit = !role.edit"></td>
+                            <td class="title"><input type="checkbox" name="delete_role" [checked]="role.delete" (change)="role.delete = !role.delete"></td>
+                            <td class="title"><input type="checkbox" name="view_role" [checked]="role.view" (change)="role.view = !role.view"></td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                Manage Companies
+                            </td>
+                            <td class="title"><input type="checkbox" name="create_company" [checked]="company.create" (change)="company.create = !company.create"></td>
+                            <td class="title"><input type="checkbox" name="edit_company" [checked]="company.edit" (change)="company.edit = !company.edit"></td>
+                            <td class="title"><input type="checkbox" name="delete_company" [checked]="company.delete" (change)="company.delete = !company.delete"></td>
+                            <td class="title"><input type="checkbox" name="view_company" [checked]="company.view" (change)="company.view = !company.view"></td>
+                        </tr>
+                        <tr>
+                            <td class="title"></td>
+                            <td class="title"><input type="checkbox" name="create_all" value="create" (change)="selectAll($event)"></td>
+                            <td class="title"><input type="checkbox" name="edit_all" value="edit" (change)="selectAll($event)"></td>
+                            <td class="title"><input type="checkbox" name="delete_all" value="delete" (change)="selectAll($event)"></td>
+                            <td class="title"><input type="checkbox" name="view_all" value="view" (change)="selectAll($event)"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-3 col-sm-12">
+        <select class="form-control m-b" name="home_url" [(ngModel)]="currentRole.home_url" #home_url="ngModel" required>
+        <option value="dashboard">Dashboard</option>
+        <option value="users">Users</option>
+        <option value="roles">User Roles</option>
+        <option value="stores">Stores</option>
+        <option value="orders">Orders</option>
+    </select>
+    </div>
+    <div class="col-md-3 col-sm-12">
+        <label for="">Display Dashboard</label>
+        <input type="checkbox" name="display_dashboard" [checked]="display_dashboard" (change)="display_dashboard = !display_dashboard">
+    </div>
+    <div class="col-md-6 col-sm-12 text-center">
+        <button class="btn btn-info btn-primary" (click)="cancel()">
+        Cancel
+      </button>
+        <button class="btn btn-info  btn-primary" (click)="save()">
+        Save
+      </button>
+    </div>
+</div>
