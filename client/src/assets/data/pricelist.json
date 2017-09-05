@@ -1,0 +1,537 @@
+[
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1",
+		"area": "Carpet",
+		"price": "2756.51"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1",
+		"area": "Kitchen/Entry",
+		"price": "539.82"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1",
+		"area": "Laundry",
+		"price": "304.53"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1",
+		"area": "Bathroom",
+		"price": "1490.65"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1C",
+		"area": "Carpet",
+		"price": "2756.51"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1C",
+		"area": "Kitchen/Entry",
+		"price": "539.82"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1C",
+		"area": "Laundry",
+		"price": "304.53"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "1C",
+		"area": "Bathroom",
+		"price": "1490.65"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "3",
+		"area": "Carpet",
+		"price": "3298.55"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "3",
+		"area": "Kitchen/Entry",
+		"price": "799.24"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "3",
+		"area": "Laundry",
+		"price": "284.29"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "3",
+		"area": "Bathroom",
+		"price": "1653.67"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "4",
+		"area": "Carpet",
+		"price": "2986.88"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "4",
+		"area": "Kitchen/Entry",
+		"price": "466.69"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "4",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "4",
+		"area": "Bathroom",
+		"price": "1697.91"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "6",
+		"area": "Carpet",
+		"price": "3501.81"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "6",
+		"area": "Kitchen/Entry",
+		"price": "718.79"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "6",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "6",
+		"area": "Bathroom",
+		"price": "1697.91"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "7",
+		"area": "Carpet",
+		"price": "3013.97"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "7",
+		"area": "Kitchen/Entry",
+		"price": "539.82"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "7",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "7",
+		"area": "Bathroom",
+		"price": "1548.51"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "8",
+		"area": "Carpet",
+		"price": "3284.99"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "8",
+		"area": "Kitchen/Entry",
+		"price": "769.30"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "8",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "8",
+		"area": "Bathroom",
+		"price": "1741.06"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "10",
+		"area": "Carpet",
+		"price": "3583.12"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "10",
+		"area": "Kitchen/Entry",
+		"price": "718.79"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "10",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "10",
+		"area": "Bathroom",
+		"price": "2101.55"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "11",
+		"area": "Carpet",
+		"price": "3434.06"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "11",
+		"area": "Kitchen/Entry",
+		"price": "583.70"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "11",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Villa",
+		"planType": "11",
+		"area": "Bathroom",
+		"price": "2348.57"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "A",
+		"area": "Carpet",
+		"price": "2011.20"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "A",
+		"area": "Kitchen/Entry",
+		"price": "371.12"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "A",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "A",
+		"area": "Bathroom",
+		"price": "2201.24"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "B",
+		"area": "Carpet",
+		"price": "2228.02"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "B",
+		"area": "Kitchen/Entry",
+		"price": "258.48"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "B",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "B",
+		"area": "Bathroom",
+		"price": "1966.02"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "C",
+		"area": "Carpet",
+		"price": "2810.71"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "C",
+		"area": "Kitchen/Entry",
+		"price": "466.69"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "C",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "C",
+		"area": "Bathroom",
+		"price": "1966.02"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BA",
+		"area": "Carpet",
+		"price": "2349.98"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BA",
+		"area": "Kitchen/Entry",
+		"price": "722.91"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BA",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BA",
+		"area": "Bathroom",
+		"price": "1585.40"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BB",
+		"area": "Carpet",
+		"price": "3054.64"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BB",
+		"area": "Kitchen/Entry",
+		"price": "722.91"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BB",
+		"area": "Laundry",
+		"price": "252.58"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BB",
+		"area": "Bathroom",
+		"price": "1585.40"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BC",
+		"area": "Carpet",
+		"price": "3054.64"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BC",
+		"area": "Kitchen/Entry",
+		"price": "722.91"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BC",
+		"area": "Laundry",
+		"price": "443.84"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BC",
+		"area": "Bathroom",
+		"price": "1585.40"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BD",
+		"area": "Carpet",
+		"price": "2892.02"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BD",
+		"area": "Kitchen/Entry",
+		"price": "799.24"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BD",
+		"area": "Laundry",
+		"price": "443.84"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BD",
+		"area": "Bathroom",
+		"price": "1585.40"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BE",
+		"area": "Carpet",
+		"price": "2675.20"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BE",
+		"area": "Kitchen/Entry",
+		"price": "799.24"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BE",
+		"area": "Laundry",
+		"price": "443.84"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Apartment",
+		"planType": "BE",
+		"area": "Bathroom",
+		"price": "1585.40"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "1",
+		"area": "Carpet",
+		"price": "2846.30"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "1",
+		"area": "Kitchen/Entry",
+		"price": "466.69"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "1",
+		"area": "Laundry",
+		"price": "302.46"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "1",
+		"area": "Bathroom",
+		"price": "1596.19"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "2",
+		"area": "Carpet",
+		"price": "2846.30"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "2",
+		"area": "Kitchen/Entry",
+		"price": "207.29"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "2",
+		"area": "Laundry",
+		"price": "583.37"
+	},
+	{
+		"customer": "Summerset by the Lake - Taupo",
+		"unitType": "Care Apartment",
+		"planType": "2",
+		"area": "Bathroom",
+		"price": "1596.19"
+	},
+	{
+		"customer": ""
+	}
+]
