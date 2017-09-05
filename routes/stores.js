@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 
 /* GET ALL STORES */
 router.get('/', function(req, res, next) {
-    Store.find(function(err, stores) {
+    Store.find({store_type: {$nin: 'support_office'}},function(err, stores) {
         if (err) return next(err);
         res.json(stores);
     });
@@ -26,7 +26,13 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
-
+/* Get SupporOffice Details */
+router.post('/support', function(req, res, next) {
+    Store.findOne({store_type: 'support_office'}, (err, office) => {
+        if (err) return res.json({success: false, msg: err});
+        res.json(office);
+    });
+})
 /* SAVE STORE */
 router.post('/', function(req, res, next) {
     let newStore = new Store({
