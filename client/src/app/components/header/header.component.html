@@ -54,6 +54,10 @@
                 <a [routerLink]="['/profile']">
                     <i class="icon-user"></i> My Profile</a>
               </li>
+              <li *ngIf="currentUser.accounttype ==='super'">
+                <a [routerLink]="['/support']">
+                  <i class="icon-home"></i> Support Office</a>
+              </li>
               <li>
                 <a [routerLink]="['/login']" (click)="logout()">
                     <i class="icon-key"></i> Log Out </a>

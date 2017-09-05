@@ -38,6 +38,8 @@ export class OrdersComponent implements OnInit {
   summaries = [];
   oSummaries = [];
   summariesTotal = {};
+  email_address = ''; // to send send remitance
+  email_data = []; // invoices to send to support office (carpet court)
   constructor(
     private router: Router,
     private storeService: StoresService,
@@ -51,6 +53,11 @@ export class OrdersComponent implements OnInit {
     if (this.user.role) {
       this.order_permission = this.user.role['order'];
     }
+    this.storeService.getSupportOffice().then(res => {
+      this.email_address = res['email'];
+    }, err => {
+      console.log(err);
+    });
     this.fetch(data => {
       const xml = $.parseXML(data).getElementsByTagName('row');
       // console.log(xml);
@@ -86,9 +93,15 @@ export class OrdersComponent implements OnInit {
         invoice['code'] = Code;
         invoice['commonname'] = CommonName;
 
-        var vExist = false;var cExist = false;
-        for ( let j = 0; j < this.codes.length; j++) if (this.codes[j] === Code) cExist = true;
-        if (!cExist) this.codes.push(Code);
+        let cExist = false;
+        for ( let j = 0; j < this.codes.length; j++) {
+          if (this.codes[j] === Code) {
+            cExist = true;
+          }
+        }
+        if (!cExist) {
+          this.codes.push(Code);
+        }
         this.invoices.push(invoice);
         this.oinvoices.push(invoice);
       }
@@ -313,11 +326,17 @@ export class OrdersComponent implements OnInit {
     }
   }
 
-  selectElement(event) {
+  selectElement(event, item) {
     if (event.target.checked) {
       this.tickCount++;
+      this.email_data.push(item);
     } else {
       this.tickCount--;
+      for (let i = 0; i < this.email_data.length; i ++) {
+        if (this.email_data[i].invnum === event.target.value) {
+          this.email_data.splice(i, 1);
+        }
+      }
     }
     for (let i = 0; i < this.invoices.length; i++ ) {
       if (this.invoices[i].invnum === event.target.value) {
@@ -326,6 +345,7 @@ export class OrdersComponent implements OnInit {
     }
 
     this.calculateSum();
+    console.log(this.email_data);
   }
 
   showDetails(item) {
@@ -345,7 +365,8 @@ export class OrdersComponent implements OnInit {
       const content = {};
       content['sumAmount'] = this.sumAmount;
       content['sumBalance'] = this.sumBalance;
-      content['email'] = 'support@jadecreative.co.nz';
+      content['type'] = 'remitance';
+      content['email'] = this.email_address;
       this.sendRemittance.sendRemittance(content).then(res => {
         console.log(res);
       }, err => {

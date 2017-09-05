@@ -17,7 +17,7 @@ declare var toastr: any;
 })
 
 export class StaffComponent implements OnInit {
-  
+
   regionData = { 'Northland': ['Far North', 'Kaipara', 'Whangarei'],
   'Auckland': ['Auckland City', 'Franklin',
   'Hauraki Gulf Islands', 'Manukau City', 'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
@@ -200,7 +200,7 @@ selectAll(event) {
       this.storePermission['edit'] = false;
       this.orderPermission['edit'] = false;
     }
-  } else if(event.target.value === 'delete') {
+  } else if (event.target.value === 'delete') {
     if (event.target.checked) {
       this.staffPermission['delete'] = true;
       this.customerPermission['delete'] = true;

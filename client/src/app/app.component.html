@@ -1,3 +1,32 @@
-<!--The content below is only a placeholder and can be replaced.-->
+<!-- header -->
+<div *ngIf="!routeState">
+    <app-header></app-header>
+    <!-- END HEADER -->
+    <div class="clearfix"> </div>
+</div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    <!--  nav -->
+    <app-navmenu *ngIf="!routeState"></app-navmenu>
+    <!-- BEGIN CONTENT BODY -->
+    <div class="page-content-wrapper">
+        <div class="content-wrapper container">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+
+</div>
+<!-- END CONTAINER -->
 
 
+<!-- SCROLL TO TOP -->
+<a href="#" id="toTop"></a>
+
+
+<!-- PRELOADER -->
+<div id="preloader">
+    <div class="inner">
+        <span class="loader"></span>
+    </div>
+</div>
+<!-- /PRELOADER -->

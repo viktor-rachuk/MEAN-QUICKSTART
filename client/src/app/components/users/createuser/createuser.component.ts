@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerComponent } from  './customer/customer.component';
+import { CustomerComponent } from './customer/customer.component';
 import { StaffComponent } from './staff/staff.component';
 
 @Component({
@@ -11,7 +11,6 @@ export class CreateuserComponent implements OnInit {
 
   user: any;
   usertype: any;
-  
   constructor() { }
 
   ngOnInit() {

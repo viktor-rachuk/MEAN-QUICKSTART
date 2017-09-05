@@ -65,7 +65,7 @@
                 <button type="button" class="btn btn-info btn-primary" (click)="cancel()">
                     Cancel
                 </button>
-              <button type="submit" class="btn btn-info  btn-primary">
+              <button type="submit" class="btn btn-info  btn-primary"  [disabled]="!userForm.form.valid">
                 Save
               </button>
 

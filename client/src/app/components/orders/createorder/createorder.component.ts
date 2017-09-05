@@ -143,7 +143,7 @@ export class CreateorderComponent implements OnInit {
    getChildCompanies() {
      if (this.user.accounttype === 'customer') {
        this.companyService.getAllChilds(this.user.companies_assigned).then(res => {
-         var temp = [];
+         const temp = [];
          const ids = this.user.companies_assigned.concat(res);
          for (let i = 0; i < this.companies.length; i++) {
            for (let j = 0; j < ids.length; j ++) {
@@ -220,6 +220,7 @@ export class CreateorderComponent implements OnInit {
       const content = {};
       content['key_staff'] = this.key_staff;
       content['staff_info'] = this.staff_info;
+      content['type'] = 'order';
       content['email'] = this.store['email'];
       this.sendRemittance.sendRemittance(content).then(res => {
         console.log(res);

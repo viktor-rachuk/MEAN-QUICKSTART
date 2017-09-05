@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { UsersService } from '../../../services/users.service';
 import { Router } from '@angular/router';
 declare var $: any;
@@ -17,7 +16,7 @@ export class SuperComponent implements OnInit {
   user_info = {};
   location: Location;
 
-  constructor(private userService: UsersService, private router: Router, location: Location) { this.location = location; }
+  constructor(private userService: UsersService, private router: Router) {}
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user'));
@@ -48,7 +47,7 @@ export class SuperComponent implements OnInit {
           toastr.error('Sorry, cannot edit this user, please try again');
         } else {
           toastr.success('Success !!!');
-          this.router.navigate(['/profile']);
+          window.history.back();
         }
       },
       err => {
@@ -58,7 +57,7 @@ export class SuperComponent implements OnInit {
   }
 
   cancel() {
-    this.location.back();
+    window.history.back();
   }
 
 }

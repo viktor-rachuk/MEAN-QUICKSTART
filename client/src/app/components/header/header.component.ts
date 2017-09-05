@@ -10,11 +10,8 @@ declare var $: any;
 export class HeaderComponent implements OnInit {
 
   currentUser: any;
-
   logoUrl: any;
-
   photoUrl: any;
-
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
@@ -25,6 +22,7 @@ export class HeaderComponent implements OnInit {
     } else {
       this.logoUrl = 'uploads/logo/' + this.currentUser.logo;
     }
+
     if (!this.currentUser.photo) {
       this.photoUrl = 'assets/images/photo.jpg';
     } else {
@@ -40,7 +38,6 @@ export class HeaderComponent implements OnInit {
     });
 
     $('[data-toggle="tooltip"]').tooltip();
-
     $('[data-toggle="popover"]').popover();
 
     // $.material.init();

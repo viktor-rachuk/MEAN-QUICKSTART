@@ -13,7 +13,7 @@ declare var swal: any;
   styleUrls: ['./users.component.css'],
 })
 export class UsersComponent implements OnInit {
-  companies: any;
+  companies: any = [];
   users: any = [];
   childs: any = [];
   temp: any = [];
@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit {
       this.user_permission = this.user.role;
     }
   }
-  
+
   ngOnInit() {
     this.filterUserType = '';
     this.getAllUsers();
@@ -88,30 +88,33 @@ export class UsersComponent implements OnInit {
 
       if (this.user.accounttype === 'customer') {
         const companies = [];
-        for (let i = 0; i< Object.keys(this.companies).length; i ++) {
+        let stores = [];
+        for (let i = 0; i < this.companies.length; i ++) {
           companies.push(this.companies[i]._id);
+          for (let j = 0; j < this.companies[i]['assigned_stores'].length;  j ++) {
+            stores.push(this.companies[i]['assigned_stores'][j]);
+          }
+          stores = Array.from(new Set(stores));
         }
         this.usersService.getAllCustomers(companies).then(respond => {
-          if (this.user_permission.customer.create || this.user_permission.customer.edit || this.user_permission.customer.delete || this.user_permission.customer.view) {
+          if (this.user_permission.customer.create || this.user_permission.customer.edit ||
+            this.user_permission.customer.delete || this.user_permission.customer.view) {
             this.childs = respond;
-          }
-          if (this.user_permission.staff.create || this.user_permission.staff.edit || this.user_permission.staff.delete || this.user_permission.staff.view) {
-            this.usersService.getAllUsers().then(all_users => {
-              for (let i = 0; i < Object.keys(all_users).length; i ++) {
-                if (all_users[i].accounttype === 'staff') {
-                  this.childs.push(all_users[i]);
-                }
-              }
-              this.users = this.childs;
-            }, err_all_users => {
-              console.log(err_all_users);
-            });
-          } else {
-            this.users = this.childs;
           }
         }, error => {
           console.log(error);
         });
+
+        if (this.user_permission.staff.create || this.user_permission.staff.edit ||
+            this.user_permission.staff.delete || this.user_permission.staff.view) {
+          this.usersService.getStaffOfCustomer(stores).then(respond => {
+            for (let i = 0; i < Object.keys(respond).length; i ++) {
+              this.childs.push(respond[i]);
+            }
+          }, error => {
+            console.log(error);
+          });
+        }
       }
     }, err => {
       console.log(err);
@@ -121,6 +124,7 @@ export class UsersComponent implements OnInit {
     if (event.target.checked) {
       this.selectedUsers.push(event.target.value);
     } else {
+
       for (let i = 0; i < this.selectedUsers.length; i++) {
         if (this.selectedUsers[i] === event.target.value) {
           this.selectedUsers.splice(i, 1);
@@ -128,21 +132,21 @@ export class UsersComponent implements OnInit {
       }
     }
   }
-  
+
   inActivateUsers() {
     this.usersService.inActivateUser(this.selectedUsers).subscribe(data => {
       this.getAllUsers();
       this.selectedUsers = [];
     });
   }
-  
+
   reActivateUsers() {
     this.usersService.deActivateUsers(this.selectedUsers).subscribe(data => {
       this.getAllUsers();
       this.selectedUsers = [];
     });
   }
-  
+
   deleteUsers() {
     swal({
       title: 'Are you sure?',
@@ -172,7 +176,7 @@ export class UsersComponent implements OnInit {
       }
     });
   }
-  
+
   createNewUser() {
     this.router.navigate(['/user']);
   }

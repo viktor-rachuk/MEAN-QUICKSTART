@@ -11,7 +11,6 @@ declare var toastr: any;
   selector: 'customer-user',
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.css']
-  
 })
 export class CustomerComponent implements OnInit {
   filesToLogo: Array<File> = [];
@@ -255,7 +254,7 @@ export class CustomerComponent implements OnInit {
         this.storePermission['edit'] = false;
         this.orderPermission['edit'] = false;
       }
-    } else if(event.target.value === 'delete') {
+    } else if (event.target.value === 'delete') {
       if (event.target.checked) {
         this.staffPermission['delete'] = true;
         this.customerPermission['delete'] = true;
@@ -340,7 +339,7 @@ export class CustomerComponent implements OnInit {
     .subscribe(res => console.log(res));
     this.customer['photo'] = files[0]['name'];
   }
-  
+
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
       this.filesToLogo = <Array<File>>event.target.files;
@@ -353,7 +352,7 @@ export class CustomerComponent implements OnInit {
     }
   }
   readPhoto(event: any) {
-    
+
     if (event.target.files && event.target.files[0]) {
       this.filesToPhoto = <Array<File>>event.target.files;
       this.photo = event.target.files[0];
@@ -364,7 +363,7 @@ export class CustomerComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]);
     }
   }
-  
+
   savePermissions() {
     this.customer.special_permissions.customer = this.customerPermission;
     this.customer.special_permissions.staff = this.staffPermission;
