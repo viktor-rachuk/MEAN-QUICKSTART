@@ -51,9 +51,6 @@
                                     <li *ngFor="let item of stores ">
                                         <input type="checkbox" name="select" [checked]="item.checked" value="{{item._id}}" (change)="selectStores($event)" />
                                         <span>{{item.store_title}}</span>
-                                        <span>{{item.email}}</span>
-                                        <span>{{item.store_info.city}}</span>
-                                        <span>{{ item.status ? 'active' : 'inactive' }}</span>
                                     </li>
                                 </ul>
                             </div>

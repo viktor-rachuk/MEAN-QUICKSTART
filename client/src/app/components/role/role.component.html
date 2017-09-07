@@ -15,6 +15,7 @@
 
 <div class="row">
     <div class="col-sm-12">
+        <ngx-loading [show]="loading"></ngx-loading>
         <div class="form-group" *ngIf=" user.accounttype === 'super' ">
             <a [routerLink]="['/createrole']" class="btn btn-primary"><i class="fa fa-user"></i> Create New Role</a>
         </div>

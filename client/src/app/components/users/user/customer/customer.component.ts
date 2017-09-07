@@ -25,7 +25,7 @@ export class CustomerEditComponent implements OnInit {
   user_info: any;
   customer_info: any;
   modalValid = true;
-  companies: any;
+  companies: any = [];
   companies_assigned = [];
   customerPermission = {};
   staffPermission = {};
@@ -77,7 +77,6 @@ export class CustomerEditComponent implements OnInit {
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     this.customer = this.user.user;
-    console.log(this.customer);
     this.user_info = this.user.user['user_info'];
     this.photoUrl = '/uploads/logo/' + this.customer.photo;
     this.customer_info = this.user.user.customer_info;
@@ -166,11 +165,7 @@ export class CustomerEditComponent implements OnInit {
   // Get Current Roles
   getAllRoles() {
     this.roleService.getAllRoles().then((res) => {
-      for ( let i = 0; i < Object.keys(res).length; i++) {
-        if (res[i].status === true) {
-          this.roles.push(res[i]);
-        }
-      }
+      this.roles = res;
     }, (err) => {
       console.log(err);
     });
@@ -292,7 +287,7 @@ export class CustomerEditComponent implements OnInit {
           this.storePermission['edit'] = false;
           this.orderPermission['edit'] = false;
         }
-      } else if(event.target.value === 'delete') {
+      } else if (event.target.value === 'delete') {
         if (event.target.checked) {
           this.staffPermission['delete'] = true;
           this.customerPermission['delete'] = true;

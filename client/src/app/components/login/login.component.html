@@ -11,7 +11,7 @@
             <div class="form-group">
                 <input type="password" [(ngModel)]="password" name="password" class="form-control" placeholder="Password" required="">
             </div>
-            <button type="submit" class="btn btn-primary btn-block ">Login</button>
+            <button type="submit" class="btn btn-primary btn-block "><i *ngIf="loading" class="fa fa-spinner fa-spin" style="margin-right: 20px;"></i>Login</button>
             <label style="padding-right: 20px;"> <input type="checkbox"  [checked]="remember_me" (change)="remember_me = !remember_me"><i></i> Remember me </label>
             <a [routerLink]="['/forgotpassword']"><small>Forgot password?</small></a>
             <p>Carpet Court &copy; 2017</p>

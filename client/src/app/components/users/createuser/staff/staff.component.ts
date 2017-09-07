@@ -154,6 +154,7 @@ getAllStores() {
     console.log(err);
   });
 }
+
 // Select Stores assigned to staff user
 selectStores(event) {
   if (event.target.checked) {

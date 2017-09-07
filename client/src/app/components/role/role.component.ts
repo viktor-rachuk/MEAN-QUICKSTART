@@ -9,6 +9,7 @@ declare var swal: any;
   styleUrls: ['./role.component.css'],
 })
 export class RoleComponent implements OnInit {
+  public loading = false;
   roles: any;
   selectedRoles: any;
   user: any;
@@ -18,14 +19,14 @@ export class RoleComponent implements OnInit {
     private router: Router,
     private roleService: RoleService
     ) {
-      this.user = JSON.parse(localStorage.getItem('user'));
-      if (this.user.special_permissions) {
-        this.role_permission = this.user.special_permissions['role'];
-      }
-      if (this.user.role) {
-        this.role_permission = this.user.role['role'];
-      }
+    this.user = JSON.parse(localStorage.getItem('user'));
+    if (this.user.special_permissions) {
+      this.role_permission = this.user.special_permissions['role'];
     }
+    if (this.user.role) {
+      this.role_permission = this.user.role['role'];
+    }
+  }
   ngOnInit() {
     this.roles = [];
     this.selectedRoles = [];
@@ -33,15 +34,17 @@ export class RoleComponent implements OnInit {
   }
 
   getAllRoles() {
+    this.loading = true;
     this.roles = [];
     this.roleService.getAllRoles().then(
       res => {
+        this.loading = false;
         this.roles = res;
       },
       err => {
         console.log(err);
       }
-    );
+      );
   }
 
   selectElement(event) {
@@ -79,15 +82,15 @@ export class RoleComponent implements OnInit {
         'Deleted!',
         'Selected roles has been deleted.',
         'success'
-      );
-      }, (dismiss) => {
+        );
+    }, (dismiss) => {
       // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
       if (dismiss === 'cancel') {
         swal(
           'Cancelled',
           'Your imaginary file is safe :)',
           'error'
-        );
+          );
       }
     });
   }
@@ -100,7 +103,7 @@ export class RoleComponent implements OnInit {
       err => {
         console.error(err);
       }
-    );
+      );
   }
 
   deactivateRoles() {
@@ -111,6 +114,6 @@ export class RoleComponent implements OnInit {
       err => {
         console.error(err);
       }
-    );
+      );
   }
 }

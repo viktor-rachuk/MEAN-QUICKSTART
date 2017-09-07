@@ -27,8 +27,8 @@ export class StaffEditComponent implements OnInit {
   companyPermission = {};
   display_dashboard: any;
   home_url: any;
-  roles: any;
-  stores: any;
+  roles: any = [];
+  stores: any = [];
   stores_assigned = [];
   currentUser: any;
   modalValid = true;
@@ -46,7 +46,6 @@ export class StaffEditComponent implements OnInit {
     this.stores = [];
     this.staff = this.user.user;
     this.stores_assigned = this.staff['stores_assigned'];
-    console.log(this.staff);
     this.user_info = this.user.user['user_info'];
     if (this.staff.special_permissions) {
       if (Object.keys(this.staff.special_permissions).length !== 0) {
@@ -61,8 +60,7 @@ export class StaffEditComponent implements OnInit {
       } else {
         this.initPermission();
       }
-    }
-    else {
+    } else {
       this.initPermission();
     }
 
@@ -135,16 +133,9 @@ export class StaffEditComponent implements OnInit {
   // Get Current Roles
   getAllRoles() {
     this.roleService.getAllRoles().then((res) => {
-      for (let i = 0; i < Object.keys(res).length; i++) {
-        if (res[i].status === true) {
-          this.roles.push(res[i]);
-        }
-      }
-
+      this.roles = res;
     }, (err) => {
-
       console.log(err);
-
     });
   }
 
@@ -218,7 +209,7 @@ export class StaffEditComponent implements OnInit {
         this.storePermission['edit'] = false;
         this.orderPermission['edit'] = false;
       }
-    } else if(event.target.value === 'delete') {
+    } else if (event.target.value === 'delete') {
       if (event.target.checked) {
         this.staffPermission['delete'] = true;
         this.customerPermission['delete'] = true;

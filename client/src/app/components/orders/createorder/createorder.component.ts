@@ -19,12 +19,12 @@ declare var swal: any;
 })
 export class CreateorderComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user'));
-  users = [];
-  stores = [];
+  users: any = [];
+  stores: any = [];
   store = {};
   store_address = {};
   store_info = {};
-  companies = [];
+  companies: any = [];
   company: any;
   company_info = {};
   assigned_stores = [];
@@ -33,7 +33,7 @@ export class CreateorderComponent implements OnInit {
   staff_info = {};
   unitTypes: any;
   colSchemas: any;
-  staffs = [];
+  staffs: any = [];
   areas_required = {
     'carpet': false,
     'kitchen': false,
@@ -49,25 +49,14 @@ export class CreateorderComponent implements OnInit {
     private unitTypeService: UnittypesService,
     private colSchemaService: ColschemasService,
     private sendRemittance: SendremittanceService
-    ) {
-    this.getAllUsers();
-    this.getAllStaffs();
-    this.getAllStores();
-    this.getAllCompanies();
-    this.colSchemaService.getAllCols().then(res => {
-      this.colSchemas = res;
-    }, err => {
-      console.log(err);
-    });
-    this.unitTypeService.getAllUnitTypes().then(res => {
-      this.unitTypes = res;
-    }, err => {
-      console.log(err);
-    });
-  }
+    ) {}
 
-  ngOnInit() {
-    this.getChildCompanies();
+ ngOnInit() {
+   this.getAllCompanies();
+   // this.getAllStaffs();
+   // this.getChildCompanies();
+    // this.getAllCols();
+    // this.getAllUnitTypes();
   }
 
   init() {
@@ -79,12 +68,29 @@ export class CreateorderComponent implements OnInit {
     this.assigned_stores = [];
   }
 
+  // Get All Colours
+  getAllCols() {
+    this.colSchemaService.getAllCols().then(res => {
+      this.colSchemas = res;
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  // Get All Unit Types
+  getAllUnitTypes() {
+    this.unitTypeService.getAllUnitTypes().then(res => {
+      this.unitTypes = res;
+    }, err => {
+      console.log(err);
+    });
+  }
+
   // Get All Staffs
   getAllUsers() {
     this.userService.getAllUsers().then( res => {
-      for (let i = 0; i < Object.keys(res).length; i ++) {
-        this.users.push(res[i]);
-      }
+      this.users = res;
+      this.getAllStaffs();
     }, err => {
       console.log(err);
     });
@@ -92,9 +98,8 @@ export class CreateorderComponent implements OnInit {
   // Get All Users
   getAllStaffs() {
     this.userService.getAllStaffs().then(res => {
-      for (let i = 0; i < Object.keys(res).length; i ++) {
-        this.staffs.push(res[i]);
-      }
+      this.staffs = res;
+      this.getChildCompanies();
       }, err => {
         console.log(err);
       });
@@ -117,9 +122,8 @@ export class CreateorderComponent implements OnInit {
   // Get All Companies
   getAllCompanies() {
     this.companyService.getAllCompanies().then((res) => {
-      for (let i = 0; i < Object.keys(res).length; i ++) {
-        this.companies.push(res[i]);
-      }
+      this.companies = res;
+     this.getAllStores();
     }, (err) => {
       console.log(err);
     });
@@ -127,7 +131,7 @@ export class CreateorderComponent implements OnInit {
   getKeyContact() {
     const key_contact = this.company['key_contacts'][0];
     if (key_contact.store === this.store['_id']) {
-      for (let i = 0; i < Object.keys(this.staffs).length; i ++) {
+      for (let i = 0; i < this.staffs.length; i ++) {
         if (this.staffs[i]._id === key_contact.key_staff) {
           this.key_staff = this.staffs[i];
           for (let j = 0; j < this.users.length; j ++) {
@@ -163,9 +167,8 @@ export class CreateorderComponent implements OnInit {
 
   getAllStores() {
     this.storeService.getAllStores().then(res => {
-      for (let i = 0; i < Object.keys(res).length; i ++) {
-        this.stores.push(res[i]);
-      }
+      this.stores = res;
+      this.getAllUsers();
     }, err => {
       console.log(err);
     });

@@ -14,6 +14,7 @@
 <!-- end .page title-->
 <div class="row">
     <div class="col-sm-12">
+        <ngx-loading [show]="loading"></ngx-loading>
         <div class="form-group">
             <ng-container *ngIf="user.accounttype==='super'">
                 <a [routerLink]="['/create']" class="btn btn-primary" id="create_user"><i class="fa fa-user-plus"></i> Create New User</a>

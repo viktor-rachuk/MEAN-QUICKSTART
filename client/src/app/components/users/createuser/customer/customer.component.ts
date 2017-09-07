@@ -30,10 +30,10 @@ export class CustomerComponent implements OnInit {
   rolePermission: any = {};
   companyPermission: any = {};
   currentCompanies: any;
-  roles: any;
+  roles: any = [];
   newCompany: any;
-  users = [];
-  companies: any;
+  users: any = [];
+  companies: any = [];
   logoUrl: string;
   photoUrl: string;
   modalValid = true;
@@ -73,8 +73,6 @@ export class CustomerComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Init current roles
-    this.roles = [];
     // Get Current User
     this.user = JSON.parse(localStorage.getItem('user'));
     // Init Special Elements
@@ -179,11 +177,7 @@ export class CustomerComponent implements OnInit {
   // Get All Users
   getAllUsers() {
     this.userService.getAllUsers().then((res) => {
-      for (let i = 0; i < Object.keys(res).length; i++) {
-        if (res[i].accounttype === 'customer' ) {
-          this.users.push(res[i]);
-        }
-      }
+      this.users = res;
     }, (err) => {
       console.log(err);
     });
@@ -191,12 +185,7 @@ export class CustomerComponent implements OnInit {
   // Get Current Roles
   getAllRoles() {
     this.roleService.getAllRoles().then((res) => {
-      for (let i = 0; i < Object.keys(res).length; i++) {
-        if (res[i].status === true) {
-          this.roles.push(res[i]);
-        }
-      }
-
+      this.roles = res;
     }, (err) => {
       console.log(err);
     });

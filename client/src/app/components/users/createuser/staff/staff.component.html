@@ -36,7 +36,6 @@
                                     <li *ngFor="let item of stores ">
                                         <input type="checkbox" name="select" value="{{item._id}}" (change)="selectStores($event)" />
                                         <span>{{item.store_title}}</span>
-                                        <span>{{item.store_info.city}}</span>
                                     </li>
                                 </ul>
                             </div>

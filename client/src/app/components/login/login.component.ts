@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   error: string;
   remember_me: boolean;
   user: any;
+  public loading = false;
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
@@ -48,6 +49,7 @@ export class LoginComponent implements OnInit {
 
   onLoginSubmit() {
     const user = {};
+    this.loading = true;
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.username)) {
       user['email'] = this.username;
       user['password'] = this.password;
@@ -63,6 +65,7 @@ export class LoginComponent implements OnInit {
     }
     this.authService.authenticateUser(user).subscribe(data => {
       if (data.success) {
+        this.loading = false;
         this.authService.storeUserData(data.token, data.user);
         this.user = JSON.parse(localStorage.getItem('user'));
         // if user's accounttype is super admin
@@ -95,6 +98,7 @@ export class LoginComponent implements OnInit {
         // this.router.navigate([this.user.role.home_url]);
       } else {
         this.router.navigate(['login']);
+        this.loading = false;
         this.error = data.msg;
       }
     });

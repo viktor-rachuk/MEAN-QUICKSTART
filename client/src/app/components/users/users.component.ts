@@ -13,6 +13,7 @@ declare var swal: any;
   styleUrls: ['./users.component.css'],
 })
 export class UsersComponent implements OnInit {
+  public loading = false;
   companies: any = [];
   users: any = [];
   childs: any = [];
@@ -29,7 +30,7 @@ export class UsersComponent implements OnInit {
     private companyService: CompanyService,
     private route: ActivatedRoute,
     private router: Router
-  ) {
+    ) {
     this.user = JSON.parse(localStorage.getItem('user'));
     if (this.user.special_permissions) {
       this.user_permission = this.user.special_permissions;
@@ -72,18 +73,21 @@ export class UsersComponent implements OnInit {
     }
   }
   getAllUsers() {
+    this.loading = true;
     this.companyService.getAllCompanies().then(res => {
       this.companies = res;
       if (this.user.accounttype === 'super' || this.user.accounttype === 'staff') {
         this.usersService.getAllUsers().then(
           (respond) => {
+            this.loading = false;
             this.users = respond;
             this.temp = this.users;
           },
           (error) => {
+            this.loading = false;
             console.log(error);
           }
-        );
+          );
       }
 
       if (this.user.accounttype === 'customer') {
@@ -97,28 +101,32 @@ export class UsersComponent implements OnInit {
           stores = Array.from(new Set(stores));
         }
         this.usersService.getAllCustomers(companies).then(respond => {
+          this.loading = false;
           if (this.user_permission.customer.create || this.user_permission.customer.edit ||
             this.user_permission.customer.delete || this.user_permission.customer.view) {
             this.childs = respond;
-          }
-        }, error => {
-          console.log(error);
-        });
+        }
+      }, error => {
+        this.loading = false;
+        console.log(error);
+      });
 
         if (this.user_permission.staff.create || this.user_permission.staff.edit ||
-            this.user_permission.staff.delete || this.user_permission.staff.view) {
+          this.user_permission.staff.delete || this.user_permission.staff.view) {
           this.usersService.getStaffOfCustomer(stores).then(respond => {
+            this.loading = false;
             for (let i = 0; i < Object.keys(respond).length; i ++) {
               this.childs.push(respond[i]);
             }
           }, error => {
+            this.loading = false;
             console.log(error);
           });
-        }
       }
-    }, err => {
-      console.log(err);
-    });
+    }
+  }, err => {
+    console.log(err);
+  });
   }
   selectElement(event) {
     if (event.target.checked) {
@@ -164,7 +172,7 @@ export class UsersComponent implements OnInit {
         'Deleted!',
         'Selected Users has been deleted.',
         'success'
-      );
+        );
     }, function(dismiss) {
       // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
       if (dismiss === 'cancel') {
@@ -172,7 +180,7 @@ export class UsersComponent implements OnInit {
           'Cancelled',
           'Your imaginary file is safe :)',
           'error'
-        );
+          );
       }
     });
   }

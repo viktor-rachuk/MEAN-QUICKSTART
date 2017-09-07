@@ -15,6 +15,7 @@ declare var swal: any;
   styleUrls: ['./orders.component.css'],
 })
 export class OrdersComponent implements OnInit {
+  public loading = false;
   location: Location;
   user: any;
   order_permission: any;
@@ -45,7 +46,7 @@ export class OrdersComponent implements OnInit {
     private storeService: StoresService,
     private companyService: CompanyService,
     private sendRemittance: SendremittanceService
-  ) {
+    ) {
     this.user = JSON.parse(localStorage.getItem('user'));
     if (this.user.special_permissions) {
       this.order_permission = this.user.special_permissions['order'];
@@ -58,7 +59,11 @@ export class OrdersComponent implements OnInit {
     }, err => {
       console.log(err);
     });
-    this.fetch(data => {
+  }
+
+  async ngOnInit() {
+   this.loading = true;
+    await this.fetch(data => {
       const xml = $.parseXML(data).getElementsByTagName('row');
       // console.log(xml);
       for ( let i = 0; i < xml.length; i ++) {
@@ -130,15 +135,13 @@ export class OrdersComponent implements OnInit {
         this.summaries.push(summary);
         this.oSummaries.push(summary);
       }
+      this.getAllCompanies();
     });
-  }
-
-  ngOnInit() {
-    this.getAllCompanies();
   }
 
   getAllStores() {
     this.storeService.getAllStores().then(res => {
+      this.loading = false;
       let ids = [];
       for (let i = 0; i < this.companies.length; i ++) {
         for (let j = 0; j < this.companies[i]['assigned_stores'].length; j++) {
@@ -154,6 +157,7 @@ export class OrdersComponent implements OnInit {
         }
       }
     }, err => {
+      this.loading = false;
       console.log(err);
     });
   }
@@ -259,7 +263,7 @@ export class OrdersComponent implements OnInit {
 
   fetch(cb) {
     const req = new XMLHttpRequest();
-    req.open('GET', 'assets/data/Summerset_Invoices.xml');
+    req.open('GET', 'assets/data/Summerset_Invoices.xml', true);
     req.onload = () => {
       cb(req.response);
     };
@@ -376,7 +380,7 @@ export class OrdersComponent implements OnInit {
         'Sent Email Succesffully!',
         'Sent Email To Carpet Court.',
         'success'
-      );
+        );
     }, function(dismiss) {
       // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
       if (dismiss === 'cancel') {
@@ -384,7 +388,7 @@ export class OrdersComponent implements OnInit {
           'Cancelled',
           'Your imaginary file is safe :)',
           'error'
-        );
+          );
       }
     });
   }
