@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 router.get('/', function(req, res, next) {
     Store.find({store_type: {$nin: 'support_office'}},function(err, stores) {
         if (err) return next(err);
+        stores = sortByKey(stores, 'store_title');
         res.json(stores);
     });
 });
@@ -126,5 +127,12 @@ router.post("/deactivate", (req, res, next) => {
         );
     }
 });
-
+  // sort users ASC
+  function sortByKey(array, key) {
+    return array.sort((a, b) => {
+      const x = a[key].toUpperCase();
+      const y = b[key].toUpperCase();
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
+}
 module.exports = router;
