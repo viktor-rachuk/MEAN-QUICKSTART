@@ -374,6 +374,7 @@ router.put('/:id', function(req, res, next) {
 
 // Authenticate
 router.post('/authenticate', (req, res, next) => {
+    console.log(req.body);
     const username = req.body.username;
     const useremail = req.body.email;
     const password = req.body.password;
@@ -502,13 +503,13 @@ router.post('/authenticate', (req, res, next) => {
                             });
                         }
                     });
-            }
-            } else {
-                return res.json({
-                    success: false,
-                    msg: 'Wrong password',
-                });
-            }
+}
+} else {
+    return res.json({
+        success: false,
+        msg: 'Wrong password',
+    });
+}
 });
 });
 });
@@ -526,6 +527,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res, nex
                     }
                 }
             }
+            users = sortByKey(users, 'username');
             res.json(users);
         });
     });
@@ -535,6 +537,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res, nex
 router.post('/staffs', (req, res, next) => {
     Staff.find({}, (err, staffs) => {
         if (err) return res.json({ success: false, msg: err });
+        staffs = sortByKey(staffs, 'username');
         res.json(staffs);
     });
 });
@@ -567,6 +570,7 @@ router.post('/customers', (req, res, next) => {
                     }
                 }
             }
+            respond_users = sortByKey(respond_users, 'username');
             res.json(respond_users);
         });
     });
@@ -651,9 +655,19 @@ router.post('/customer_staffs', (req, res, next) => {
                     user['status'] = discovered_users[i]['status'];
                     respond_users.push(user);
                 }
+                respond_users = sortByKey(respond_users, 'username');
                 res.json(respond_users);
             });
         });
     });
 });
+
+  // sort users ASC
+  function sortByKey(array, key) {
+    return array.sort((a, b) => {
+      const x = a[key].toUpperCase();
+      const y = b[key].toUpperCase();
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
+}
 module.exports = router;
