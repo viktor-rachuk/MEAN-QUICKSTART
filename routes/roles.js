@@ -8,6 +8,7 @@ const Role = require("../models/role");
 router.get("/", function(req, res, next) {
   Role.find(function(err, roles) {
     if (err) return next(err);
+    roles = sortByKey(roles, 'role_name');
     res.json(roles);
   });
 });
@@ -96,4 +97,12 @@ router.post("/reactivate", (req, res, next) => {
   });
 });
 
+  // sort users ASC
+  function sortByKey(array, key) {
+    return array.sort((a, b) => {
+      const x = a[key].toUpperCase();
+      const y = b[key].toUpperCase();
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
+  }
 module.exports = router;
