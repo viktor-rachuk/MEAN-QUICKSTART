@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import 'rxjs/add/operator/retry';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class CompanyService {
   getAllCompanies() {
     return new Promise((resolve, reject) => {
       this.http.get('/companies')
+        .retry(3)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -21,6 +23,7 @@ export class CompanyService {
   getCompanyStructure(id) { // for company structure in company create and edit screen
     return new Promise((resolve, reject) => {
       this.http.post('/companies/structure', {id})
+        .retry(3)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -33,6 +36,7 @@ export class CompanyService {
   getChildTree(ids) { // for companies screen when customer user logged in, ids is assigned companies to customer user
     return new Promise((resolve, reject) => {
       this.http.post('/companies/some', {ids})
+        .retry(3)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -44,6 +48,7 @@ export class CompanyService {
   getCompaniesTree() {
     return new Promise((resolve, reject) => {
       this.http.get('/companies/all')
+        .retry(3)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -57,6 +62,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
         this.http.get('/companies/' + id)
           .map(res => res.json())
+          .retry(3)
           .subscribe(res => {
             resolve(res);
         }, (err) => {
@@ -69,6 +75,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
       this.http.post('/companies', {company})
         .map(res => res.json())
+        .retry(3)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -81,6 +88,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
       this.http.put('/companies/' + id, {company})
         .map(res => res.json())
+        .retry(3)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -93,6 +101,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
       this.http.post('/companies/delete', companies)
         .map(res => res.json())
+        .retry(3)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -105,6 +114,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
       this.http.post('/companies/deactivate', companies)
         .map(res => res.json())
+        .retry(3)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -117,6 +127,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
       this.http.post('/companies/childs', ids)
       .map(res => res.json())
+      .retry(3)
       .subscribe(res => {
         resolve(res);
       }, (err) => {
@@ -129,6 +140,7 @@ export class CompanyService {
     return new Promise((resolve, reject) => {
       this.http.post('/companies/ids', ids)
       .map(res => res.json())
+      .retry(3)
       .subscribe(res => {
         resolve(res);
       }, (err) => {

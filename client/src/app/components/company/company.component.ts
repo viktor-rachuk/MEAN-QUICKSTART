@@ -10,6 +10,7 @@ declare var swal: any;
   styleUrls: ['./company.component.css'],
 })
 export class CompanyComponent implements OnInit {
+  public loading = false;
   currentCompanies: any;
   selectedCompanies: any;
   items: TreeviewItem[];
@@ -34,47 +35,51 @@ export class CompanyComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.company_permission);
-    console.log(this.user);
     this.selectedCompanies = [];
     this.getAllCompanies();
     // this.items = [this.itCategory];
   }
 
   getAllCompanies() {
+    this.loading = true;
     if (this.user.accounttype === 'super' || this.user.accounttype === 'staff') {
       this.companyServices.getCompaniesTree().then(
         res => {
+          this.loading = false;
           this.currentCompanies = res;
           const items = [];
           for (let i = 0; i < Object.keys(res).length; i ++) {
             const item = new TreeviewItem(res[i]);
             items.push(item);
           }
-          this.items = items;
+          this.items = this.sortByKey(items, 'name');
         },
         err => {
-          throw err;
+          console.log(err);
+          this.loading = false;
         }
-      );
+        );
     }
     if (this.user.accounttype === 'customer') {
       this.userService.getUserDetails(this.user.id).then(res => {
         this.companyServices.getChildTree(res['user'].companies_assigned).then(
           respond => {
+            this.loading = false;
             this.currentCompanies = respond;
             const items = [];
             for (let i = 0; i < Object.keys(respond).length; i ++) {
               const item = new TreeviewItem(respond[i]);
               items.push(item);
             }
-            this.items = items;
+            this.items = this.sortByKey(items, 'name');
           },
           error => {
+            this.loading = false;
             console.log(error);
           }
-        );
+          );
       }, err => {
+        this.loading = false;
         console.log(err);
       });
     }
@@ -96,59 +101,68 @@ export class CompanyComponent implements OnInit {
         (err) => {
           console.error(err);
         });
-        swal(
-          'Deleted!',
-          'Selected companies has been deleted.',
-          'success'
+      swal(
+        'Deleted!',
+        'Selected companies has been deleted.',
+        'success'
         );
-      }, (dismiss) => {
-        // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
-        if (dismiss === 'cancel') {
-          swal(
-            'Cancelled',
-            'Your imaginary file is safe :)',
-            'error'
+    }, (dismiss) => {
+      // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+      if (dismiss === 'cancel') {
+        swal(
+          'Cancelled',
+          'Your imaginary file is safe :)',
+          'error'
           );
-        }
-      });
-    }
-
-    deactivateComapnies() {
-      this.companyServices.deactivateRoles(this.selectedCompanies).then(
-        res => {
-          this.getAllCompanies();
-        },
-        err => {
-          console.error(err);
-        }
-      );
-    }
-
-    reactivateComapnies() {
-      this.companyServices.reactivateRoles(this.selectedCompanies).then(
-        res => {
-          this.getAllCompanies();
-        },
-        err => {
-          console.error(err);
-        }
-      );
-    }
-    onSelectedChange($event) {
-      console.log($event);
-    }
-
-    selectItem(event) {
-      if (event.target.checked) {
-        this.selectedCompanies.push(event.target.value);
-        console.log(this.selectedCompanies);
-      } else {
-        for (let i = 0; i < this.selectedCompanies.length; i ++) {
-          if (this.selectedCompanies[i] === event.target.value) {
-            this.selectedCompanies.splice(i, 1);
-          }
-        }
-        console.log(this.selectedCompanies);
       }
+    });
+  }
+
+  deactivateComapnies() {
+    this.companyServices.deactivateRoles(this.selectedCompanies).then(
+      res => {
+        this.getAllCompanies();
+      },
+      err => {
+        console.error(err);
+      }
+      );
+  }
+
+  reactivateComapnies() {
+    this.companyServices.reactivateRoles(this.selectedCompanies).then(
+      res => {
+        this.getAllCompanies();
+      },
+      err => {
+        console.error(err);
+      }
+      );
+  }
+  onSelectedChange($event) {
+    console.log($event);
+  }
+
+  selectItem(event) {
+    if (event.target.checked) {
+      this.selectedCompanies.push(event.target.value);
+      console.log(this.selectedCompanies);
+    } else {
+      for (let i = 0; i < this.selectedCompanies.length; i ++) {
+        if (this.selectedCompanies[i] === event.target.value) {
+          this.selectedCompanies.splice(i, 1);
+        }
+      }
+      console.log(this.selectedCompanies);
     }
   }
+
+  // sort users ASC
+  sortByKey(array, key) {
+    return array.sort((a, b) => {
+      const x = a[key].toUpperCase();
+      const y = b[key].toUpperCase();
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+  }
+}

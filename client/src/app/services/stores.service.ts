@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import 'rxjs/add/operator/retry';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class StoresService {
     return new Promise((resolve, reject) => {
       this.http.get('/stores')
         .map(res => res.json())
+        .retry(3)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -24,6 +26,7 @@ export class StoresService {
     return new Promise((resolve, reject) => {
       this.http.post('stores', store, {headers: headers})
         .map(res => res.json())
+        .retry(3)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -39,6 +42,7 @@ export class StoresService {
     return new Promise((resolve, reject) => {
         this.http.get('stores/' + id,  {headers: headers})
           .map(res => res.json())
+          .retry(3)
           .subscribe(res => {
             resolve(res);
         }, (err) => {
@@ -71,6 +75,7 @@ export class StoresService {
     return new Promise((resolve, reject) => {
         this.http.put('stores/' + id, data, {headers: headers})
           .map(res => res.json())
+          .retry(3)
           .subscribe(res => {
             resolve(res);
           }, (err) => {

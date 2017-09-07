@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import 'rxjs/add/operator/retry';
 import 'rxjs/add/operator/map';
 @Injectable()
 export class UsersService {
@@ -100,6 +101,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
     this.http.post('/users/staffs', {headers: headers})
       .map(res => res.json())
+      .retry(3)
       .subscribe(res => {
         resolve(res);
       }, (err) => {
@@ -116,6 +118,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
     this.http.post('/users/customers', companies, {headers: headers})
       .map(res => res.json())
+      .retry(3)
       .subscribe(res => {
         resolve(res);
       }, (err) => {
@@ -133,6 +136,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
     this.http.post('/users/customer_staffs', stores, {headers: headers})
       .map(res => res.json())
+      .retry(3)
       .subscribe(res => {
         resolve(res);
       }, (err) => {
