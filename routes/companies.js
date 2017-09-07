@@ -9,6 +9,7 @@ const Customer = require('../models/customer');
 router.get('/', function(req, res, next) {
     Company.find(function(err, companies) {
         if (err) return res.send(err);
+        companies = sortByKey(companies, 'name');
         res.json(companies);
     });
 });
@@ -396,6 +397,15 @@ router.post('/reactivate', (req, res, next) => {
 
 module.exports = router;
 
+  // sort users ASC
+  function sortByKey(array, key) {
+    return array.sort((a, b) => {
+      const x = a[key].toUpperCase();
+      const y = b[key].toUpperCase();
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
+}
+
 var build_tree = (companies, parent) => {
     let parent_data = {
         value: parent._id,
@@ -417,11 +427,12 @@ var build_tree = (companies, parent) => {
             parent_data['collapsed'] = true;
             parent_data.children.push(build_tree(companies, child));
         });
-
+        if (parent_data.children.length !== 0) {
+            parent_data.children = sortByKey(parent_data.children, 'text');
+        }
         return parent_data;
     } else {
         // console.log(parent.name + ' has no children, returning it :', parent_data);
-
         return parent_data;
     }
 };
