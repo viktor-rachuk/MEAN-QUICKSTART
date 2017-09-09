@@ -1,0 +1,31 @@
+div.container
+	div.content
+		div.header
+			div.border
+			div.logo
+				img(src="http://commercial.carpetcourt.nz/assets/images/email_logo.png")
+		div.body
+			table
+				thead
+					tr
+						th #
+						th STORE
+						th INVOICE NUMBER
+						th INVOICE DATE
+						th VILLAGE
+						th PONUM
+						th BALANCE
+						th AMOUNT TO PAY
+				tbody
+					each invoice in invoices
+						tr
+							td #
+							td #{invoice.store}
+							td #{invoice.invnum}
+							td #{invoice.invdate}
+							td #{invoice.village}
+							td #{invoice.ponum}
+							td #{invoice.balance}
+							td #{invoice.amounttopay}
+
+

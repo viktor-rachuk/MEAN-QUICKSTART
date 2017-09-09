@@ -1,0 +1,25 @@
+[
+    {   "id": 1,
+        "name": "Johne Doe",
+        "usertype": "Customer",
+        "company": "SummerSet ",
+        "customertype": "master",
+        "status": "active"
+    },
+   {
+        "id": 2,
+        "name": "John Doe",
+        "usertype": "Customer",
+        "company": "SummerSet",
+        "customertype": "master",
+        "status": "active"
+    },
+    {
+        "id": 3,
+        "name": "John Doe",
+        "usertype": "Customer",
+        "company": "master",
+        "customertype": "master",
+        "status": "active"
+    }
+]

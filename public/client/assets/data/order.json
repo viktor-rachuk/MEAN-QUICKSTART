@@ -1,0 +1,26 @@
+[
+    {   "id": 1,
+        "type": "Invoice",
+        "invoice": "HM008627",
+        "invoicedDate": "25/01/2017",
+        "store": "Hamilton",
+        "village": "Hamilton",
+        "balance": "$3200"
+    },
+   {   "id": 2,
+        "type": "Invoice",
+        "invoice": "HM008627",
+        "invoicedDate": "25/01/2017",
+        "store": "Hamilton",
+        "village": "Hamilton",
+        "balance": "$3200"
+    },
+    {   "id": 3,
+        "type": "Invoice",
+        "invoice": "HM008627",
+        "invoicedDate": "25/01/2017",
+        "store": "Hamilton",
+        "village": "Hamilton",
+        "balance": "$3200"
+    }
+]

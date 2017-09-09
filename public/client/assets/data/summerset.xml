@@ -1,0 +1,153 @@
+<?xml version="1.0" ?>
+<data>
+    <row No='1'>
+        <InvNum>HM008627</InvNum>
+        <DateInvoiced>25/01/2017</DateInvoiced>
+        <Period>Older</Period>
+        <MonthsOld>4</MonthsOld>
+        <Value>2834.78</Value>
+        <GST>425.22</GST>
+        <InvoiceTotal>3260</InvoiceTotal>
+        <Balance>3260</Balance>
+        <PONum>HAM0001941</PONum>
+        <StoreName>Hamilton</StoreName>
+        <Code>HAM</Code>
+        <Village>Hamilton</Village>
+        <CommonName>Down the Lane</CommonName>
+    </row>
+    <row No='2'>
+        <InvNum>HM009218</InvNum>
+        <DateInvoiced>11/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>695.66</Value>
+        <GST>104.34</GST>
+        <InvoiceTotal>800</InvoiceTotal>
+        <Balance>0</Balance>
+        <PONum>HAM0002073</PONum>
+        <StoreName>Hamilton</StoreName>
+        <Code>HAM</Code>
+        <Village>Hamilton</Village>
+        <CommonName>Down the Lane</CommonName>
+    </row>
+    <row No='3'>
+        <InvNum>TA005222</InvNum>
+        <DateInvoiced>14/09/2016</DateInvoiced>
+        <Period>Older</Period>
+        <MonthsOld>8</MonthsOld>
+        <Value>467.83</Value>
+        <GST>70.17</GST>
+        <InvoiceTotal>538</InvoiceTotal>
+        <Balance>-61</Balance>
+        <PONum>KRK0000594</PONum>
+        <StoreName>Takanini</StoreName>
+        <Code>KRK</Code>
+        <Village>Karaka</Village>
+        <CommonName>Karaka</CommonName>
+    </row>
+    <row No='4'>
+        <InvNum>17/151</InvNum>
+        <DateInvoiced>25/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>1348.60</Value>
+        <GST>202.29</GST>
+        <InvoiceTotal>1550.89</InvoiceTotal>
+        <Balance>1550.89</Balance>
+        <PONum>LVN0003116</PONum>
+        <StoreName>Levin</StoreName>
+        <Code>LVN</Code>
+        <Village>Levin</Village>
+        <CommonName>By the Ranges</CommonName>
+    </row>
+    <row No='5'>
+        <InvNum>17/159</InvNum>
+        <DateInvoiced>25/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>865.90</Value>
+        <GST>129.89</GST>
+        <InvoiceTotal>995.79</InvoiceTotal>
+        <Balance>995.79</Balance>
+        <PONum>LVN0003133</PONum>
+        <StoreName>Levin</StoreName>
+        <Code>LVN</Code>
+        <Village>Levin</Village>
+        <CommonName>By the Ranges</CommonName>
+    </row>
+    <row No='6'>
+        <InvNum>17/163</InvNum>
+        <DateInvoiced>22/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>1489.28</Value>
+        <GST>223.39</GST>
+        <InvoiceTotal>1712.67</InvoiceTotal>
+        <Balance>1712.67</Balance>
+        <PONum>LVN0003140</PONum>
+        <StoreName>Levin</StoreName>
+        <Code>LVN</Code>
+        <Village>Levin</Village>
+        <CommonName>By the Ranges</CommonName>
+    </row>
+    <row No='7'>
+        <InvNum>TF035667</InvNum>
+        <DateInvoiced>29/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>919.87</Value>
+        <GST>137.98</GST>
+        <InvoiceTotal>1057.85</InvoiceTotal>
+        <Balance>0</Balance>
+        <PONum>NSN0002519</PONum>
+        <StoreName>Nelson</StoreName>
+        <Code>NSN</Code>
+        <Village>Nelson</Village>
+        <CommonName>In the Sun</CommonName>
+    </row>
+    <row No='8'>
+        <InvNum>TF035711</InvNum>
+        <DateInvoiced>29/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>2689.50</Value>
+        <GST>403.43</GST>
+        <InvoiceTotal>3092.93</InvoiceTotal>
+        <Balance>0</Balance>
+        <PONum>NSN0002543</PONum>
+        <StoreName>Nelson</StoreName>
+        <Code>NSN</Code>
+        <Village>Nelson</Village>
+        <CommonName>In the Sun</CommonName>
+    </row>
+    <row No='9'>
+        <InvNum>PN013656</InvNum>
+        <DateInvoiced>31/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>6871.39</Value>
+        <GST>1030.71</GST>
+        <InvoiceTotal>7902.1</InvoiceTotal>
+        <Balance>0</Balance>
+        <PONum>PMN0004199</PONum>
+        <StoreName>Palmerston North</StoreName>
+        <Code>PMN</Code>
+        <Village>Palmerston North</Village>
+        <CommonName>On Summerhill</CommonName>
+    </row>
+    <row No='10'>
+        <InvNum>PN013874</InvNum>
+        <DateInvoiced>31/05/2017</DateInvoiced>
+        <Period>Current</Period>
+        <MonthsOld>0</MonthsOld>
+        <Value>7145.85</Value>
+        <GST>1071.88</GST>
+        <InvoiceTotal>8217.73</InvoiceTotal>
+        <Balance>8217.73</Balance>
+        <PONum>PMN0004200</PONum>
+        <StoreName>Palmerston North</StoreName>
+        <Code>PMN</Code>
+        <Village>Palmerston North</Village>
+        <CommonName>On Summerhill</CommonName>
+    </row>
+</data>

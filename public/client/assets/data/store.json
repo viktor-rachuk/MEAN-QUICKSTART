@@ -1,0 +1,17 @@
+[
+    {   "id": 1,
+        "store": "Moorhouse Ave",
+        "contact": "John Doe",
+        "city": "SummerSet "
+    },
+   {   "id": 2,
+        "store": "Moorhouse Ave",
+        "contact": "John Doe",
+        "city": "SummerSet "
+    },
+    {   "id": 3,
+        "store": "Moorhouse Ave",
+        "contact": "John Doe",
+        "city": "SummerSet "
+    }
+]
