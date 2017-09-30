@@ -9,9 +9,90 @@ const Staff = require('../models/staff');
 const Customer = require('../models/customer');
 const Company = require('../models/company');
 const Store = require('../models/stores');
+const mg = require('nodemailer-mailgun-transport');
+const EmailTemplate = require('email-templates').EmailTemplate;
+const pug = require('pug');
+const path = require('path');
+const api_key = 'key-7b5976bf90fc90de4defde1087ac58b5';
+const domain = 'commercial.carpetcourt.nz';
+const mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
+// validate user email exist
+exports.validate_email = (req, res) => {
+    const templateDir = appRoot + '/public/template/password/';
+    const myTemplate = new EmailTemplate(templateDir);
+    const email = req.body.email;
+    const code = Date.now();
+    User.findOne({email: req.body.email}, (err, user) => {
+        if (err) return res.json({success: false, msg: 'User Not Exist!'});
+        if (user) {
+            myTemplate.render({
+                'code': code,
+                'username': user.username
+            }, (err, result) => {
+                var data = {
+                    from: 'Carpet Court Commercial<postmaster@commercial.carpetcourt.nz>',
+                    to: email,
+                    subject: ' Carpet Court: Forgot Password Confirmation Code',
+                    text: ' Carpet Court: Forgot Password Confirmation Code',
+                    html: result.html
+                };
+                mailgun.messages().send(data, function(error, body) {
+                    if (error) return res.json({ success: false, msg: error });
+                    user.token = code;
+                    user.save((save_err, saved_user) => {
+                        if (save_err) return res.json({success: false, msg: 'User not Exist'});
+                        return res.json({
+                            success: true,
+                            msg: 'Your confirmation code has been emailed to you. Please check your mail and enter the confirmation code into the field below.'
+                        });
+                    });
+                });
+            });
+        } else {
+            return res.json({success: false, msg: 'Sorry, you entered an email that does not exist!'});
+        }
+    });
+};
 
 
+// check email already exist
+exports.check_email = (req, res) => {
+    User.findOne({email: req.body.email}, (err, user) => {
+        if (err) return res.json({success: true, msg: err});
+        if (user) {
+            return res.json({success: false, msg: 'Email invalid!'});
+        } else {
+            return res.json({success: true, msg: 'Email valid!'});
+        }
+    });
+};
+// confirm code
+exports.confirm_code = (req, res) => {
+    User.findOne({email: req.body.email}, (err, user) => {
+        if (err) return res.json({success: false, msg: 'User not exist'});
+        if (user.token === req.body.code) {
+            return res.json({success: true, msg: 'Code confirmed'});
+        } else {
+            return res.json({success: false, msg: 'Please try again!'});
+        }
+    });
+};
 
+// reset password
+exports.reset_password = (req, res) => {
+    User.findOne({email: req.body.email}, (err, user) => {
+        if (err) return res.json({success: false, msg: 'User not exist'});
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(req.body.password, salt, (err, hash) => {
+                user.password = hash;
+                user.save((save_err, saved_user) => {
+                    if (save_err) return res.json({success: false, msg: 'User not exist!'});
+                    return res.json({success: true, msg: 'Reset Password Successfully!'});
+                });
+            });
+        });
+    });
+};
 // get all users
 exports.user_list = (req, res) => {
     User.find({ accounttype: { $ne: 'super' } }, { password: 0 }, function(err, users) {
@@ -274,6 +355,7 @@ exports.user_update = (req, res) => {
             });
         } else {
             if (req.body.special_permissions) {
+                // console.log(req.body)
                 User.findByIdAndUpdate(req.body.userid, content, (err, user) => {
                     if (err) return res.json({ success: false, msg: 'Error' });
                 });
@@ -382,7 +464,7 @@ exports.user_customers = (req, res) => {
             }
         }
         User.find({}, (error, users) => {
-            const respond_users = [];
+            let respond_users = [];
             if (error) return res.json({ success: false, msg: err });
             for (let i = 0; i < users.length; i++) {
                 for (let j = 0; j < customer_users.length; j++) {
@@ -436,6 +518,7 @@ exports.user_authenticate = (req, res) => {
                         user: {
                             id: user._id,
                             username: user.username,
+                            email: user.email,
                             accounttype: user.accounttype,
                         },
                     });
@@ -620,7 +703,7 @@ exports.user_customer_staffs = (req, res) => {
                 names.push(staff_users[i].username);
             }
             User.find({ username: { $in: names } }, (error_users, discovered_users) => {
-                const respond_users = [];
+                let respond_users = [];
                 if (error_users) return res.json({ success: false, msg: error_users });
                 for (let i = 0; i < discovered_users.length; i++) {
                     const user = {};
