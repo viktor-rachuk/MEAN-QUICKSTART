@@ -7,8 +7,8 @@ const mg = require('nodemailer-mailgun-transport');
 const EmailTemplate = require('email-templates').EmailTemplate;
 const pug = require('pug');
 const path = require('path');
-const api_key = 'key-7b5976bf90fc90de4defde1087ac58b5';
-const domain = 'commercial.carpetcourt.nz';
+const api_key = 'your-key';
+const domain = 'your-domain';
 const mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
 const historyController = require('../controllers/historyController');
 const Company = require('../models/company');
@@ -108,16 +108,16 @@ const send_mail = (template_path, content, receiver, callback ) => {  /* path is
     const templateDir = path.join('public', 'template', template_path);
     let subject = '';
     if (template_path === 'email') {
-        subject = ' Carpet Court: Send Remittance Advice';
+        subject = 'Send Remittance Advice';
     } else {
-        subject = ' Carpet Court: Flooring Order Request ';
+        subject = 'Flooring Order Request ';
     }
     const myTemplate = new EmailTemplate(templateDir);
     myTemplate.render(content, (err, result) => {
         if (err) callback(false);
         if (result.html) {
             const data = {
-                from: 'Carpet Court Commercial<no-reply@commercial.carpetcourt.nz>',
+                from: 'John Doe<no-reply@john.doe>',
                 to: receiver,
                 subject: subject,
                 text: subject,
