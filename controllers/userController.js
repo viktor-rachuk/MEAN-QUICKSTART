@@ -13,8 +13,8 @@ const mg = require('nodemailer-mailgun-transport');
 const EmailTemplate = require('email-templates').EmailTemplate;
 const pug = require('pug');
 const path = require('path');
-const api_key = 'key-7b5976bf90fc90de4defde1087ac58b5';
-const domain = 'commercial.carpetcourt.nz';
+const api_key = 'your-key';
+const domain = 'your-domain';
 const mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
 // validate user email exist
 exports.validate_email = (req, res) => {
@@ -30,10 +30,10 @@ exports.validate_email = (req, res) => {
                 'username': user.username
             }, (err, result) => {
                 var data = {
-                    from: 'Carpet Court Commercial<postmaster@commercial.carpetcourt.nz>',
+                    from: 'John Doe<postmaster@john.doe>',
                     to: email,
-                    subject: ' Carpet Court: Forgot Password Confirmation Code',
-                    text: ' Carpet Court: Forgot Password Confirmation Code',
+                    subject: ' Forgot Password Confirmation Code',
+                    text: 'Forgot Password Confirmation Code',
                     html: result.html
                 };
                 mailgun.messages().send(data, function(error, body) {
