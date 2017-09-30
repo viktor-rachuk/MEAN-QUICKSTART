@@ -6,6 +6,9 @@ const config = require('../config/database');
 const bcrypt = require('bcryptjs');
 const userController = require('../controllers/userController');
 
+
+// Check email validation
+router.post('/val_email', userController.check_email);
 // Register
 router.post('/register', userController.user_register);
 // get user's childs
@@ -53,6 +56,7 @@ router.post('/authenticate', userController.user_authenticate);
 // Get All Users
 router.get('/', passport.authenticate('jwt', { session: false }), userController.user_list);
 
+
 // Get All Staffs
 router.post('/staffs', userController.user_staffs);
 
@@ -71,4 +75,13 @@ router.post('/delete', userController.user_delete);
 // Get Staffs Of Customer user
 router.post('/customer_staffs', userController.user_customer_staffs);
 
+
+// Validate User email of password forgot user
+router.post('/sen_code', userController.validate_email);
+
+// Confirm User code
+router.post('/con_code', userController.confirm_code);
+
+// Reset password
+router.post('/res_password', userController.reset_password);
 module.exports = router;
