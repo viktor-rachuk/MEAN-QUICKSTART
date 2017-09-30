@@ -2,6 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 declare var $: any;
+declare var jQuery: any;
 
 @Component ({
   selector: 'app-navmenu',

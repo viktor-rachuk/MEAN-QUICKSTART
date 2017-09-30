@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { RoleService } from '../../../../services/role.service';
 import { CompanyService } from '../../../../services/company.service';
 import { UsersService } from '../../../../services/users.service';
+import { ToastrService } from 'ngx-toastr';
 
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-customeredit',
@@ -18,6 +18,8 @@ declare var toastr: any;
 export class CustomerEditComponent implements OnInit {
 
   @Input() user: any;
+  old_email: any;
+  email_valid = true;
   filesToPhoto: Array<File> = [];
   confirmPassword: any;
   photo: File;
@@ -26,61 +28,42 @@ export class CustomerEditComponent implements OnInit {
   customer_info: any;
   modalValid = true;
   companies: any = [];
-  companies_assigned = [];
-  customerPermission = {};
-  staffPermission = {};
-  storePermission = {};
-  orderPermission = {};
-  rolePermission = {};
-  companyPermission = {};
+  companies_assigned: any = [];
+  customerPermission: any = {};
+  staffPermission: any = {};
+  storePermission: any = {};
+  orderPermission: any = {};
+  rolePermission: any = {};
+  companyPermission: any = {};
   display_dashboard: any;
+  send_remittance = false;
   home_url: any;
   roles: any = [];
   newCompany: any;
   currentUser: any;
   // Logo Url
   photoUrl: string;
-  regionData = {
-    'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-    'Auckland': ['Auckland City', 'Franklin', 'Hauraki Gulf Islands',
-    'Manukau City', 'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-    'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua', 'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-    'Coromandel': ['Thames-Coromandel'],
-    'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-    'Gisborne': ['Gisborne'],
-    'Central North Island': ['Ruapehu', 'Taupo'],
-    'Hawkes Bay': ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-    'Taranaki': ['New Plymouth', 'South Taranaki', 'Stratford'],
-    'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-    'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-    'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-    'Marlborough': ['Kaikoura', 'Marlborough'],
-    'Nelson & Bays': ['Nelson', 'Tasman'],
-    'West Coast': ['Buller', 'Grey', 'Westland'],
-    'Canterbury': ['Ashburton', 'Banks Peninsula', 'Christchurch City',
-    'Hurunui', 'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-    'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-    'Otago': ['Clutha', 'Dunedin City', 'Waitaki'],
-    'Southland': ['Gore', 'Invercargill City', 'Southland']
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
   };
-  regions = Object.keys(this.regionData);
-  cities: any;
-
   constructor(
     private http: Http,
     private router: Router,
     private roleService: RoleService,
     private companyService: CompanyService,
-    private userService: UsersService
-  ) { }
+    private userService: UsersService,
+    private toastr: ToastrService
+    ) { }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     this.customer = this.user.user;
+    this.old_email = this.customer.email;
     this.user_info = this.user.user['user_info'];
     this.photoUrl = '/uploads/logo/' + this.customer.photo;
     this.customer_info = this.user.user.customer_info;
-    this.cities = this.regionData[this.customer.customer_info.region];
     this.companies_assigned = this.customer['companies_assigned'];
     this.companyService.getAllCompanies().then(res => {
       this.companies = res;
@@ -104,6 +87,7 @@ export class CustomerEditComponent implements OnInit {
         this.rolePermission = this.customer.special_permissions.role;
         this.home_url = this.customer.special_permissions.home_url;
         this.display_dashboard = this.customer.special_permissions.display_dashboard;
+        this.send_remittance = this.customer.special_permissions.send_remittance;
       } else {
         this.initPermission();
       }
@@ -111,18 +95,8 @@ export class CustomerEditComponent implements OnInit {
       this.initPermission();
     }
     this.getAllRoles();
-    // Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
   }
-
   // init permission
-
   initPermission() {
     this.staffPermission = {
       'create': false,
@@ -171,12 +145,6 @@ export class CustomerEditComponent implements OnInit {
     });
   }
 
-  // Select Region
-  selectRegion(event) {
-    const region = event.target.value;
-    this.cities = this.regionData[region];
-  }
-  // Select Company
   selectCompany(event) {
     if (event.target.checked) {
       this.companies_assigned.push(event.target.value);
@@ -190,6 +158,8 @@ export class CustomerEditComponent implements OnInit {
   }
 
   onSubmit() {
+    this.customer.username = this.customer.username.trim();
+    this.customer.email = this.customer.email.trim();
     this.customer['user_info'] = this.user_info;
     this.customer['status'] = 'active';
     this.customer['accounttype'] = 'customer';
@@ -203,9 +173,9 @@ export class CustomerEditComponent implements OnInit {
     }
     this.userService.updateUser(this.customer.id, this.customer).then((result) => {
       if (!result['success']) {
-        toastr.error('Sorry, cannot edit this user, please try again');
+        this.toastr.error('Sorry, cannot edit this user, please try again', '', this.toastr_options);
       } else {
-        toastr.success('Success !!!');
+        this.toastr.success('Success !!!', '', this.toastr_options);
         this.router.navigate(['/users']);
       }
     }, (err) => {
@@ -249,76 +219,95 @@ export class CustomerEditComponent implements OnInit {
     this.customer.special_permissions.role = this.rolePermission;
     this.customer.special_permissions.display_dashboard = this.display_dashboard;
     this.customer.special_permissions.home_url = this.home_url;
+    this.customer.special_permissions.send_remittance = this.send_remittance;
     this.customer.role = '';
     this.modalValid = false;
   }
 
-    // select All permission, deselect all
-    selectAll(event) {
-      if (event.target.value === 'create') {
-        if (event.target.checked) {
-          this.staffPermission['create'] = true;
-          this.customerPermission['create'] = true;
-          this.companyPermission['create'] = true;
-          this.rolePermission['create'] = true;
-          this.storePermission['create'] = true;
-          this.orderPermission['create'] = true;
-        } else {
-          this.staffPermission['create'] = false;
-          this.customerPermission['create'] = false;
-          this.companyPermission['create'] = false;
-          this.rolePermission['create'] = false;
-          this.storePermission['create'] = false;
-          this.orderPermission['create'] = false;
-        }
-      } else if (event.target.value === 'edit') {
-        if (event.target.checked) {
-          this.staffPermission['edit'] = true;
-          this.customerPermission['edit'] = true;
-          this.companyPermission['edit'] = true;
-          this.rolePermission['edit'] = true;
-          this.storePermission['edit'] = true;
-          this.orderPermission['edit'] = true;
-        } else {
-          this.staffPermission['edit'] = false;
-          this.customerPermission['edit'] = false;
-          this.companyPermission['edit'] = false;
-          this.rolePermission['edit'] = false;
-          this.storePermission['edit'] = false;
-          this.orderPermission['edit'] = false;
-        }
-      } else if (event.target.value === 'delete') {
-        if (event.target.checked) {
-          this.staffPermission['delete'] = true;
-          this.customerPermission['delete'] = true;
-          this.companyPermission['delete'] = true;
-          this.rolePermission['delete'] = true;
-          this.storePermission['delete'] = true;
-          this.orderPermission['delete'] = true;
-        } else {
-          this.staffPermission['delete'] = false;
-          this.customerPermission['delete'] = false;
-          this.companyPermission['delete'] = false;
-          this.rolePermission['delete'] = false;
-          this.storePermission['delete'] = false;
-          this.orderPermission['delete'] = false;
-        }
-      } else if (event.target.value === 'view') {
-        if (event.target.checked) {
-          this.staffPermission['view'] = true;
-          this.customerPermission['view'] = true;
-          this.companyPermission['view'] = true;
-          this.rolePermission['view'] = true;
-          this.storePermission['view'] = true;
-          this.orderPermission['view'] = true;
-        } else {
-          this.staffPermission['view'] = false;
-          this.customerPermission['view'] = false;
-          this.companyPermission['view'] = false;
-          this.rolePermission['view'] = false;
-          this.storePermission['view'] = false;
-          this.orderPermission['view'] = false;
-        }
+  // select All permission, deselect all
+  selectAll(event) {
+    if (event.target.value === 'create') {
+      if (event.target.checked) {
+        this.staffPermission['create'] = true;
+        this.customerPermission['create'] = true;
+        this.companyPermission['create'] = true;
+        this.rolePermission['create'] = true;
+        this.storePermission['create'] = true;
+        this.orderPermission['create'] = true;
+      } else {
+        this.staffPermission['create'] = false;
+        this.customerPermission['create'] = false;
+        this.companyPermission['create'] = false;
+        this.rolePermission['create'] = false;
+        this.storePermission['create'] = false;
+        this.orderPermission['create'] = false;
+      }
+    } else if (event.target.value === 'edit') {
+      if (event.target.checked) {
+        this.staffPermission['edit'] = true;
+        this.customerPermission['edit'] = true;
+        this.companyPermission['edit'] = true;
+        this.rolePermission['edit'] = true;
+        this.storePermission['edit'] = true;
+        this.orderPermission['edit'] = true;
+      } else {
+        this.staffPermission['edit'] = false;
+        this.customerPermission['edit'] = false;
+        this.companyPermission['edit'] = false;
+        this.rolePermission['edit'] = false;
+        this.storePermission['edit'] = false;
+        this.orderPermission['edit'] = false;
+      }
+    } else if (event.target.value === 'delete') {
+      if (event.target.checked) {
+        this.staffPermission['delete'] = true;
+        this.customerPermission['delete'] = true;
+        this.companyPermission['delete'] = true;
+        this.rolePermission['delete'] = true;
+        this.storePermission['delete'] = true;
+        this.orderPermission['delete'] = true;
+      } else {
+        this.staffPermission['delete'] = false;
+        this.customerPermission['delete'] = false;
+        this.companyPermission['delete'] = false;
+        this.rolePermission['delete'] = false;
+        this.storePermission['delete'] = false;
+        this.orderPermission['delete'] = false;
+      }
+    } else if (event.target.value === 'view') {
+      if (event.target.checked) {
+        this.staffPermission['view'] = true;
+        this.customerPermission['view'] = true;
+        this.companyPermission['view'] = true;
+        this.rolePermission['view'] = true;
+        this.storePermission['view'] = true;
+        this.orderPermission['view'] = true;
+      } else {
+        this.staffPermission['view'] = false;
+        this.customerPermission['view'] = false;
+        this.companyPermission['view'] = false;
+        this.rolePermission['view'] = false;
+        this.storePermission['view'] = false;
+        this.orderPermission['view'] = false;
       }
     }
+  }
+
+  validateEmail(email: string) {
+    if (this.old_email !== email) {
+      this.userService.checkEmail(email).then(res => {
+        if (res['success']) {
+          this.email_valid = true;
+        } else {
+          this.email_valid = false;
+        }
+      }, err => {
+        console.log(err);
+      });
+    }
+  }
+
+  setEmailValid() {
+    this.email_valid = true;
+  }
 }

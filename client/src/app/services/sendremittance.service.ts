@@ -9,11 +9,26 @@ export class SendremittanceService {
   constructor(private http: Http) { }
 
   sendRemittance(content) {
-  	const headers = new Headers();
+    const headers = new Headers();
     headers.append('Authorization', localStorage.getItem('id_token'));
     headers.append('Content-Type', 'application/json');
     return new Promise((resolve, reject) => {
       this.http.post('/email', content, {headers: headers})
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+  sendOrderEmail(content) {
+    const headers = new Headers();
+    headers.append('Authorization', localStorage.getItem('id_token'));
+    headers.append('Content-Type', 'application/json');
+    return new Promise((resolve, reject) => {
+      this.http.post('/email/order', content, {headers: headers})
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);

@@ -27,11 +27,12 @@
                   #username="ngModel"  required>
               </div>
             </div>
-            <div class="form-group" >
+            <div class="form-group" [ngClass]="{ 'has-error' : email.invalid && email.touched || !email_valid}">
               <label class="col-lg-2 col-md-3 control-label">Email</label>
               <div class="col-lg-5 col-md-5">
                 <input type="email" name="email" placeholder="Enter email" class="form-control" [(ngModel)]="user.email" #email="ngModel"
-                  [email]="true" required>
+                  [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" (keyup.enter)="validateEmail(email.value)" (blur)="validateEmail(email.value)"  (keypress)="setEmailValid()" required>
+                  <span class="error" *ngIf="!email_valid">*Email Address already taken!</span>
               </div>
             </div>
             <div class="form-group">
@@ -65,7 +66,7 @@
                 <button type="button" class="btn btn-info btn-primary" (click)="cancel()">
                     Cancel
                 </button>
-              <button type="submit" class="btn btn-info  btn-primary"  [disabled]="!userForm.form.valid">
+              <button type="submit" class="btn btn-info  btn-primary"  [disabled]="!userForm.form.valid || !email_valid">
                 Save
               </button>
 

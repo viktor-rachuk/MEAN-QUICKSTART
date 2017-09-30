@@ -1,29 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { UnittypesService } from '../../../services/unittypes.service';
-import { VillagesService } from '../../../services/villages.service';
-declare var swal: any;
+import swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
+
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 @Component({
   selector: 'app-unittype',
   templateUrl: './unittype.component.html',
   styleUrls: ['./unittype.component.css']
 })
 export class UnittypeComponent implements OnInit {
-  unitTypes: any;
-  selectedUnitTypes: any;
-  villages: any;
-
+  unitTypes: any = [];
+  selectedUnitTypes: any = [];
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private unitTypesService: UnittypesService,
-    private villagesService: VillagesService
-  ) { }
+    private toastr: ToastrService
+  ) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user.accounttype !== 'super') {
+      window.history.back();
+      this.toastr.error('You have no permission to access histories!', 'Permission Error', this.toastr_options);
+    }
+  }
 
   ngOnInit() {
-    this.unitTypes = [];
-    this.selectedUnitTypes = [];
-    this.villages = [];
     this.getAllUnitTypes();
   }
 
@@ -31,29 +37,7 @@ export class UnittypeComponent implements OnInit {
     this.unitTypes = [];
     this.unitTypesService.getAllUnitTypes().then(
       res => {
-        let temp = [];
-        this.villagesService.getAllVils().then(
-          respond => {
-            for (let i = 0; i < Object.keys(res).length; i++) {
-              let unitType = {}
-              unitType['_id'] = res[i]._id;
-              unitType['name'] = res[i].name;
-              unitType['status'] = res[i].status;
-              temp = [];
-              for ( let j = 0; j < Object.keys(respond).length; j++ ) {
-                for (let k = 0; k < res[i]['villages_assigned'].length; k++ ) {
-                  if ( respond[j]._id === res[i]['villages_assigned'][k] ) {
-                    temp.push(respond[j].name);
-                  }
-                }
-              }
-              unitType['villages_assigned'] = temp;
-              this.unitTypes.push(unitType);
-            }
-          },
-          error => {
-            console.log(error);
-          });
+        this.unitTypes = res;
         }, err => { console.log(err); });
       }
 
@@ -93,7 +77,7 @@ export class UnittypeComponent implements OnInit {
               }
             });
           } else {
-            toastr.error(' Sorry, you did not selected any unit types' );
+            this.toastr.error(' Sorry, you did not selected any unit types', '', this.toastr_options );
           }
         }
 

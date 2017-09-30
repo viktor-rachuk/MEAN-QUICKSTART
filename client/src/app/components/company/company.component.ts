@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CompanyService } from '../../services/company.service';
 import { UsersService } from '../../services/users.service';
 import { TreeviewItem, TreeviewConfig } from 'ngx-treeview';
-declare var swal: any;
+import swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-company',
@@ -23,14 +25,31 @@ export class CompanyComponent implements OnInit {
     hasCollapseExpand: true,
     maxHeight: 400
   });
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
 
-  constructor(private companyServices: CompanyService, private userService: UsersService) {
+  constructor(
+    private companyServices: CompanyService,
+    private userService: UsersService,
+    private toastr: ToastrService
+    ) {
     this.user = JSON.parse(localStorage.getItem('user'));
     if (this.user.special_permissions) {
       this.company_permission = this.user.special_permissions['company'];
     }
     if (this.user.role) {
       this.company_permission = this.user.role['company'];
+    }
+
+    if (this.user.accounttype !== 'super') {
+      if (!this.company_permission.create && !this.company_permission.edit &&
+        !this.company_permission.delete && !this.company_permission.view) {
+        window.history.back();
+        this.toastr.error('You have no permission to access companies!', 'Permission Error', this.toastr_options);
+      }
     }
   }
 
@@ -52,7 +71,7 @@ export class CompanyComponent implements OnInit {
             const item = new TreeviewItem(res[i]);
             items.push(item);
           }
-          this.items = this.sortByKey(items, 'name');
+          this.items = items;
         },
         err => {
           console.log(err);
@@ -71,7 +90,7 @@ export class CompanyComponent implements OnInit {
               const item = new TreeviewItem(respond[i]);
               items.push(item);
             }
-            this.items = this.sortByKey(items, 'name');
+            this.items = items;
           },
           error => {
             this.loading = false;
@@ -146,23 +165,8 @@ export class CompanyComponent implements OnInit {
   selectItem(event) {
     if (event.target.checked) {
       this.selectedCompanies.push(event.target.value);
-      console.log(this.selectedCompanies);
     } else {
-      for (let i = 0; i < this.selectedCompanies.length; i ++) {
-        if (this.selectedCompanies[i] === event.target.value) {
-          this.selectedCompanies.splice(i, 1);
-        }
-      }
-      console.log(this.selectedCompanies);
+      this.selectedCompanies.splice(this.selectedCompanies.indexOf(event.target.value), 1);
     }
-  }
-
-  // sort users ASC
-  sortByKey(array, key) {
-    return array.sort((a, b) => {
-      const x = a[key].toUpperCase();
-      const y = b[key].toUpperCase();
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
   }
 }

@@ -5,20 +5,25 @@ import { Router } from '@angular/router';
 import { RoleService } from '../../../../services/role.service';
 import { CompanyService } from '../../../../services/company.service';
 import { UsersService } from '../../../../services/users.service';
+import { RegionService } from '../../../../services/region.service';
+import { ToastrService } from 'ngx-toastr';
+
+// to init jQuery plugins
 declare var $: any;
-declare var toastr: any;
 @Component({
   selector: 'customer-user',
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent implements OnInit {
+  email_valid = true;
   filesToLogo: Array<File> = [];
   filesToPhoto: Array<File> = [];
   confirmPassword: any;
   logo: File;
   photo: File;
   display_dashboard: any;
+  send_remittance: any;
   home_url: any;
   customer: any;
   user_info: any;
@@ -32,36 +37,15 @@ export class CustomerComponent implements OnInit {
   currentCompanies: any;
   roles: any = [];
   newCompany: any;
-  users: any = [];
   companies: any = [];
   logoUrl: string;
   photoUrl: string;
   modalValid = true;
-  regionData = {
-    'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-    'Auckland': ['Auckland City', 'Franklin', 'Hauraki Gulf Islands',
-    'Manukau City', 'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-    'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua', 'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-    'Coromandel': ['Thames-Coromandel'],
-    'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-    'Gisborne': ['Gisborne'],
-    'Central North Island' : ['Ruapehu', 'Taupo'],
-    'Hawkes Bay' : ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-    'Taranaki' : ['New Plymouth', 'South Taranaki', 'Stratford'],
-    'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-    'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-    'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-    'Marlborough': ['Kaikoura', 'Marlborough'],
-    'Nelson & Bays': ['Nelson', 'Tasman'],
-    'West Coast': ['Buller', 'Grey', 'Westland'],
-    'Canterbury': ['Ashburton', 'Banks Peninsula', 'Christchurch City', 'Hurunui',
-    'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-    'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-    'Otago' : ['Clutha', 'Dunedin City', 'Waitaki'],
-    'Southland' : ['Gore', 'Invercargill City', 'Southland']
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
   };
-  regions = Object.keys(this.regionData);
-  cities: any;
   companies_assigned = [];
   user: any;
   constructor(
@@ -69,10 +53,12 @@ export class CustomerComponent implements OnInit {
     private router: Router,
     private roleService: RoleService,
     private companyService: CompanyService,
-    private userService: UsersService
+    private userService: UsersService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
+    this.send_remittance = false;
     // Get Current User
     this.user = JSON.parse(localStorage.getItem('user'));
     // Init Special Elements
@@ -151,18 +137,8 @@ export class CustomerComponent implements OnInit {
 
     // Get Current Roles
     this.getAllRoles();
-    // Get Current Users
-    this.getAllUsers();
     // Get All Companies
     this.getAllCompanies();
-    // Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
   }
 
   // Get All Companies
@@ -174,14 +150,6 @@ export class CustomerComponent implements OnInit {
     });
   }
 
-  // Get All Users
-  getAllUsers() {
-    this.userService.getAllUsers().then((res) => {
-      this.users = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
   // Get Current Roles
   getAllRoles() {
     this.roleService.getAllRoles().then((res) => {
@@ -189,12 +157,6 @@ export class CustomerComponent implements OnInit {
     }, (err) => {
       console.log(err);
     });
-  }
-
-  // Select Region
-  selectRegion(event) {
-    const region = event.target.value;
-    this.cities = this.regionData[region];
   }
 
   selectCompany(event) {
@@ -279,6 +241,8 @@ export class CustomerComponent implements OnInit {
   }
 
   onSubmit() {
+    this.customer.username = this.customer.username.trim();
+    this.customer.email = this.customer.email.trim();
     this.customer['user_info'] = this.user_info;
     this.customer.user_info.phone = this.user_info.phone;
     this.customer.user_info.mobile = this.user_info.mobile;
@@ -294,11 +258,13 @@ export class CustomerComponent implements OnInit {
     }
     this.userService.createNewUser(this.customer).then((result) => {
       if (!result['success']) {
-        toastr.error(
-          'Sorry, we cannot create a customer user right now, either the username or email address is currently being used for another user'
+        this.toastr.error(
+          'Sorry, we cannot create a customer user right now, either the username or email address is currently being used for another user',
+          '',
+          this.toastr_options
         );
       } else {
-        toastr.success('Success - New Customer Created!!!');
+        this.toastr.success('Success - New Customer Created!!!', '', this.toastr_options);
         this.router.navigate(['/users']);
       }
     }, (err) => {
@@ -363,8 +329,25 @@ export class CustomerComponent implements OnInit {
     this.customer.special_permissions.company = this.companyPermission;
     this.customer.special_permissions.display_dashboard = this.display_dashboard;
     this.customer.special_permissions.home_url = this.home_url;
+    this.customer.special_permissions.send_remittance = this.send_remittance;
     this.modalValid = false;
     this.customer.role_name = '';
+  }
+
+  validateEmail(email: string) {
+    this.userService.checkEmail(email.trim()).then(res => {
+      if (res['success']) {
+        this.email_valid = true;
+      } else {
+        this.email_valid = false;
+      }
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  setEmailValid() {
+    this.email_valid = true;
   }
 }
 

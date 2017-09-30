@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+.password_not_match {
+	color: #a94442;
+}
+
+.villages_list {
+	height:300px;
+	width:100%;
+	overflow:hidden;
+	overflow-y:scroll;
+	list-style:none;
+}
+
+.modal-header {
+	background-color: #01a8fe;
+	color: white;
+}
+
+.modal-content {
+	border-radius: 0px;
+}
+
+.error {
+	color: #f00;
+}
+

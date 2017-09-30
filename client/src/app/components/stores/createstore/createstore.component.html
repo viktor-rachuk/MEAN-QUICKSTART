@@ -111,19 +111,19 @@
                         </div>
                         <h4 class="mb-xlg">Accounts Information</h4>
                         <div class="panel-body">
-                            <div class="form-group">
+                            <div class="form-group"  [ngClass]="{ 'has-error': bank_account.touched && bank_account.invalid }">
                                 <label class="col-lg-3 col-md-3 control-label">Bank Account</label>
                                 <div class="col-lg-8 col-md-8">
                                     <input type="text" name="bank_account" placeholder="Enter Bank Account" minlength="4" class="form-control" [(ngModel)]="account_info.bank_account" #bank_account="ngModel">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" [ngClass]="{ 'has-error': gst_number.touched && gst_number.invalid }">
                                 <label class="col-lg-3 col-md-3 control-label">GST Number</label>
                                 <div class="col-lg-8 col-md-8">
                                     <input type="text" name="gst_number" placeholder="Enter GST Number" minlength="4" class="form-control" [(ngModel)]="account_info.gst_number" #gst_number="ngModel">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group"  [ngClass]="{ 'has-error': payable_email.touched && payable_email.invalid }">
                                 <label class="col-lg-3 col-md-3 control-label">Accounts Payable Email</label>
                                 <div class="col-lg-8 col-md-8">
                                     <input type="text" name="payable_email" placeholder="Enter Accounts Payable Email" class="form-control" [(ngModel)]="account_info.payable_email" #payable_email="ngModel" [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">

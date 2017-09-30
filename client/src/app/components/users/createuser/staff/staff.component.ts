@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { RoleService } from '../../../../services/role.service';
 import { UsersService } from '../../../../services/users.service';
 import { StoresService } from '../../../../services/stores.service';
-import { Staff } from './staff.interface';
+import { ToastrService } from 'ngx-toastr';
+
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 
 @Component({
@@ -18,30 +18,6 @@ declare var toastr: any;
 
 export class StaffComponent implements OnInit {
 
-  regionData = { 'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-  'Auckland': ['Auckland City', 'Franklin',
-  'Hauraki Gulf Islands', 'Manukau City', 'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-  'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua', 'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-  'Coromandel': ['Thames-Coromandel'],
-  'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-  'Gisborne': ['Gisborne'],
-  'Central North Island' : ['Ruapehu', 'Taupo'],
-  'Hawkes Bay' : ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-  'Taranaki' : ['New Plymouth', 'South Taranaki', 'Stratford'],
-  'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-  'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-  'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-  'Marlborough': ['Kaikoura', 'Marlborough'],
-  'Nelson & Bays': ['Nelson', 'Tasman'],
-  'West Coast': ['Buller', 'Grey', 'Westland'],
-  'Canterbury': ['Ashburton', 'Banks Peninsula', 'Christchurch City',
-  'Hurunui', 'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-  'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-  'Otago' : ['Clutha', 'Dunedin City', 'Waitaki'],
-  'Southland' : ['Gore', 'Invercargill City', 'Southland']
-};
-regions = Object.keys(this.regionData);
-cities: any;
 stores: any;
 stores_assigned = [];
 staff: any;
@@ -55,18 +31,27 @@ orderPermission: any;
 rolePermission: any;
 companyPermission: any;
 display_dashboard: any;
+send_remittance: any;
 home_url: any;
 roles = [];
 user: any;
 modalValid = true;
+email_valid = true;
+toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
 constructor (
   private router: Router,
   private roleService: RoleService,
   private userService: UsersService,
-  private storeService: StoresService
+  private storeService: StoresService,
+  private toastr: ToastrService
 ) { }
 
 ngOnInit() {
+  this.send_remittance = false;
   // Get Current Logged in User
   this.user = JSON.parse(localStorage.getItem('user'));
   this.staff = {
@@ -121,14 +106,6 @@ ngOnInit() {
   this.getAllRoles();
   // Get All Stores
   this.getAllStores();
-  // Init UI elements
-  toastr.options = {
-    'debug': false,
-    'newestOnTop': false,
-    'positionClass': 'toast-bottom-right',
-    'closeButton': true,
-    'progressBar': true
-  };
 }
 
 // Get Current Roles
@@ -236,6 +213,8 @@ selectAll(event) {
   }
 }
 onSubmit() {
+  this.staff.username = this.staff.username.trim();
+  this.staff.email = this.staff.email.trim();
   this.staff['user_info'] = this.user_info;
   this.staff['stores_assigned'] = this.stores_assigned;
   this.staff.user_info.phone = this.user_info.phone;
@@ -248,11 +227,12 @@ onSubmit() {
   }
   this.userService.createNewUser(this.staff).then((result) => {
     if (!result['success']) {
-      toastr.error(
-        'Sorry,we cannot create a customer user right now,either the username or email address is currently being used for another user'
+      this.toastr.error(
+        'Sorry,we cannot create a customer user right now,either the username or email address is currently being used for another user',
+        '', this.toastr_options
       );
     } else {
-      toastr.success('Success - New Staff Created!!!');
+      this.toastr.success('Success - New Staff Created!!!', '', this.toastr_options);
       this.router.navigate(['/users']);
     }
   }, (err) => {
@@ -271,7 +251,24 @@ savePermissions() {
   this.staff.special_permissions.role = this.rolePermission;
   this.staff.special_permissions.display_dashboard = this.display_dashboard;
   this.staff.special_permissions.home_url = this.home_url;
+  this.staff.special_permissions.send_remittance = this.send_remittance;
   this.staff.role_name = '';
   this.modalValid = false;
 }
+
+  validateEmail(email: string) {
+    this.userService.checkEmail(email).then(res => {
+      if (res['success']) {
+        this.email_valid = true;
+      } else {
+        this.email_valid = false;
+      }
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  setEmailValid() {
+    this.email_valid = true;
+  }
 }

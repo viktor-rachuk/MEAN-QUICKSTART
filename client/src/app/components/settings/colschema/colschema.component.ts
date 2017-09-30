@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UnittypesService } from '../../../services/unittypes.service';
 import { ColschemasService } from '../../../services/colschemas.service';
+import { ToastrService } from 'ngx-toastr';
 
-declare var swal: any;
+import swal from 'sweetalert2';
+
 // To use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
-
 
 @Component({
   selector: 'app-colschema',
@@ -18,11 +18,22 @@ export class ColschemaComponent implements OnInit {
   colSchemas: any;
   unitTypesAssigned: any;
   selectedColSchemas = [];
-
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private unitTypesService: UnittypesService,
-    private colSchemaService: ColschemasService
-  ) { }
+    private colSchemaService: ColschemasService,
+    private toastr: ToastrService
+  ) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user.accounttype !== 'super') {
+      window.history.back();
+      this.toastr.error('You have no permission to access colour schemas!', 'Permission Error', this.toastr_options);
+    }
+  }
 
   ngOnInit() {
     this.unitTypes = [];
@@ -41,7 +52,7 @@ export class ColschemaComponent implements OnInit {
 
           respond => {
             for (let i = 0; i < Object.keys(res).length; i++) {
-              const colSchema = {}
+              const colSchema = {};
               colSchema['_id'] = res[i]._id;
               colSchema['name'] = res[i].name;
               colSchema['status'] = res[i].status;
@@ -101,7 +112,7 @@ export class ColschemaComponent implements OnInit {
               }
             });
           } else {
-            toastr.error(' Sorry, you did not selected any unit types' );
+            this.toastr.error(' Sorry, you did not selected any unit types', '', this.toastr_options );
           }
         }
         deactivateColSchemas() {

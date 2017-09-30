@@ -109,6 +109,7 @@ export class UsersService {
       });
     });
   }
+
 // Get Child Customers of customer user screen when customer logged in
   getAllCustomers(companies) {
     const headers = new Headers();
@@ -144,6 +145,67 @@ export class UsersService {
       });
     });
   }
+
+  // Send User email in forgot password screen
+  sendCode(email) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return new Promise((resolve, reject) => {
+    this.http.post('/users/sen_code', {email}, {headers: headers})
+      .map(res => res.json())
+      .subscribe(res => {
+        resolve(res);
+      }, (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  // Confirm User Code
+  confirmCode(code) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return new Promise((resolve, reject) => {
+    this.http.post('/users/con_code', code, {headers: headers})
+      .map(res => res.json())
+      .subscribe(res => {
+        resolve(res);
+      }, (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  // Reset password
+  resetPassword(password) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return new Promise((resolve, reject) => {
+    this.http.post('/users/res_password', password, {headers: headers})
+      .map(res => res.json())
+      .subscribe(res => {
+        resolve(res);
+      }, (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  // check email already exist
+  checkEmail(email) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return new Promise((resolve, reject) => {
+    this.http.post('/users/val_email', {email}, {headers: headers})
+      .map(res => res.json())
+      .subscribe(res => {
+        resolve(res);
+      }, (err) => {
+        reject(err);
+      });
+    });
+  }
+
 }
 
 

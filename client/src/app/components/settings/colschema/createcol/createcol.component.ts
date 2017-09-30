@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UnittypesService } from '../../../../services/unittypes.service';
 import { ColschemasService } from '../../../../services/colschemas.service';
+import { ToastrService } from 'ngx-toastr';
+
 import { Router } from '@angular/router';
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 
 @Component({
@@ -20,11 +21,16 @@ export class CreatecolComponent implements OnInit {
   newArea: any;
   selectedArea: any;
   selectedAreas: any;
-
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
     private unitTypesService: UnittypesService,
-    private colSchemaService: ColschemasService
+    private colSchemaService: ColschemasService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -107,9 +113,9 @@ export class CreatecolComponent implements OnInit {
     this.colSchemaService.saveCol(this.colSchema).then(
       res => {
         if (!res['success']) {
-          toastr.error(' Sorry, unable to create a colour schema right now, please try again soon');
+          this.toastr.error(' Sorry, unable to create a colour schema right now, please try again soon', '', this.toastr_options);
         } else {
-          toastr.success('Success !!!');
+          this.toastr.success('Success !!!', '', this.toastr_options);
           this.router.navigate(['/col-schema']);
         }
         }, err => {

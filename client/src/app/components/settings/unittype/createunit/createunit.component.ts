@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { VillagesService } from '../../../../services/villages.service';
 import { UnittypesService } from '../../../../services/unittypes.service';
+import { ToastrService } from 'ngx-toastr';
+
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-createunit',
@@ -13,65 +13,38 @@ declare var toastr: any;
 })
 export class CreateunitComponent implements OnInit {
 
-
-  villages: any;
   newUnitType: any;
-  villages_assigned: any;
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
-    private villagesService: VillagesService,
-    private unittypesService: UnittypesService
-  ) { }
+    private unittypesService: UnittypesService,
+    private toastr: ToastrService
+  ) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user.accounttype !== 'super') {
+      window.history.back();
+      this.toastr.error('You have no permission to access histories!', 'Permission Error', this.toastr_options);
+    }
+  }
 
   ngOnInit() {
     this.newUnitType = {
       name: '',
       status: ''
-    }
-    this.villages = [];
-    this.villages_assigned = [];
-    this.getAllVillages();
-    // Init UI elements
-    toastr.options = {
-      "debug": false,
-      "newestOnTop": false,
-      "positionClass": "toast-bottom-right",
-      "closeButton": true,
-      "progressBar": true
     };
   }
-
-  getAllVillages() {
-    this.villagesService.getAllVils().then(
-      res => {
-        this.villages = res;
-        },
-      err => {
-        console.log(err);
-      });
-  }
-
-  selectVillage(event) {
-    if (event.target.checked) {
-      this.villages_assigned.push(event.target.value);
-    } else {
-      for (let i = 0; i < this.villages_assigned.length; i++) {
-        if (this.villages_assigned[i] === event.target.value) {
-          this.villages_assigned.splice(i, 1);
-        }
-      }
-    }
-  }
-
   save() {
     this.newUnitType.status = true;
-    this.newUnitType.villages_assigned = this.villages_assigned;
     this.unittypesService.saveUnitType(this.newUnitType).then(
       res => {
          if (!res['success']) {
-          toastr.error(' Sorry, unable to create a unittype right now, please try again soon');
+          this.toastr.error(' Sorry, unable to create a unittype right now, please try again soon', '', this.toastr_options);
         } else {
-          toastr.success('Success !!!');
+          this.toastr.success('Success !!!', '', this.toastr_options);
           this.router.navigate(['/uni-types']);
         }
       },

@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { UsersService } from '../../../services/users.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 // jQuery and Toastr
 declare var $: any;
-declare var toastr: any;
-
-
 @Component({
   selector: 'customer-profile',
   templateUrl: './customer.component.html',
@@ -15,41 +13,41 @@ declare var toastr: any;
 })
 export class CustomerProfileComponent implements OnInit {
   user: any;
-  customer = {};
+  email_valid = true;
+  old_email: any;
+  customer: any = {};
   filesToPhoto: Array<File> = [];
   confirmPassword: any;
   photo: File;
   location: Location;
-  user_info =  {};
-  customer_info = {};
+  user_info: any =  {};
+  customer_info: any = {};
   photoUrl: string;
-
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
       private http: Http,
       private router: Router,
+      private toastr: ToastrService,
       private userService: UsersService
     ) {}
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user'));
     this.photoUrl = '/uploads/logo/' + this.user.photo;
+    // Get All Companies
     this.getUserDetails();
   }
 
   getUserDetails() {
     this.userService.getUserDetails(this.user.id).then((res) => {
-      console.log(res);
       this.customer = res['user'];
+      this.old_email = this.customer.email;
       this.user_info = this.customer['user_info'];
       this.customer_info = this.customer['customer_info'];
-      // Init UI elements
-      toastr.options = {
-        'debug': false,
-        'newestOnTop': false,
-        'positionClass': 'toast-bottom-right',
-        'closeButton': true,
-        'progressBar': true
-      };
       }, (err) => {
       console.log(err);
     });
@@ -62,11 +60,11 @@ export class CustomerProfileComponent implements OnInit {
     }
     customer['userid'] = this.customer['userid'];
     customer['customer_info'] = this.customer_info;
-    customer['username'] = this.customer['username'];
+    customer['username'] = this.customer['username'].trim();
     customer['user_info'] = this.user_info;
     customer['id'] = this.customer['id'];
     customer['accounttype'] = 'customer';
-    customer['email'] = this.customer['email'];
+    customer['email'] = this.customer['email'].trim();
     customer['photo'] = this.customer['photo'];
     customer['password'] = this.customer['password'];
     if (this.customer['role'] ) {
@@ -77,9 +75,9 @@ export class CustomerProfileComponent implements OnInit {
     }
     this.userService.updateUser(customer['id'], customer).then((result) => {
       if (!result['success']) {
-        toastr.error('Sorry, cannot edit this user, please try again');
+        this.toastr.error('Sorry, cannot edit this user, please try again', '', this.toastr_options);
       } else {
-        toastr.success('Success !!!');
+        this.toastr.success('Success !!!', '', this.toastr_options);
         this.router.navigate(['/users']);
       }
       }, (err) => {
@@ -110,6 +108,24 @@ export class CustomerProfileComponent implements OnInit {
 
   cancel() {
     window.history.back();
+  }
+
+  validateEmail(email: string) {
+    if (this.old_email !== email) {
+      this.userService.checkEmail(email).then(res => {
+        if (res['success']) {
+          this.email_valid = true;
+        } else {
+          this.email_valid = false;
+        }
+      }, err => {
+        console.log(err);
+      });
+    }
+  }
+
+  setEmailValid() {
+    this.email_valid = true;
   }
 
 

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoleService } from '../../../services/role.service';
-import { VillagesService } from '../../../services/villages.service';
+import { ToastrService } from 'ngx-toastr';
+import { CurrentpermissionService } from '../../../services/currentpermission.service';
 // To use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-createrole',
@@ -23,21 +23,31 @@ export class CreateroleComponent implements OnInit {
   company: any;
   home_url: any;
   status: any;
+  send_remittance: any;
   display_dashboard: any;
-  villages: any;
-  villages_assigned: any;
-
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
     private roleService: RoleService,
-    private villagesService: VillagesService
-  ) {}
+    private toastr: ToastrService,
+    private permissionService: CurrentpermissionService
+  ) {
+      this.permissionService.getPermissions((permissions) => {
+      const role_permission = permissions.role;
+      if (permissions.user_type !== 'super') {
+        if (!role_permission.create) {
+          window.history.back();
+          this.toastr.error('You have no permission to create role!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
+  }
 
   ngOnInit() {
-
-    this.villages = [];
-    this.villages_assigned = [];
-    this.getAllVillages();
     this.getAllRoles();
     this.error = '';
     this.newRole = {
@@ -93,27 +103,10 @@ export class CreateroleComponent implements OnInit {
       'delete': false,
       'view': false,
     };
-    // Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
 
     this.display_dashboard = true;
     this.home_url = '';
-  }
-
-  getAllVillages() {
-    this.villagesService.getAllVils().then(
-      res => {
-        this.villages = res;
-      }, err => {
-        console.log(err);
-      }
-    );
+    this.send_remittance = false;
   }
   getAllRoles() {
     this.roleService.getAllRoles().then(
@@ -124,20 +117,6 @@ export class CreateroleComponent implements OnInit {
         console.log(err);
       }
     );
-  }
-  checkAllVillages(event) {
-   console.log('check function');
-  }
-  selectVillage(event) {
-    if (event.target.checked) {
-      this.villages_assigned.push(event.target.value);
-    } else {
-      for (let i = 0; i < this.villages_assigned.length; i++) {
-        if (this.villages_assigned[i] === event.target.value) {
-          this.villages_assigned.splice(i, 1);
-        }
-      }
-    }
   }
 
   // select All permission, deselect all
@@ -174,7 +153,7 @@ export class CreateroleComponent implements OnInit {
           this.store['edit'] = false;
           this.order['edit'] = false;
         }
-      } else if(event.target.value === 'delete') {
+      } else if (event.target.value === 'delete') {
         if (event.target.checked) {
           this.staff['delete'] = true;
           this.customer['delete'] = true;
@@ -217,14 +196,14 @@ export class CreateroleComponent implements OnInit {
     this.newRole.company = this.company;
     this.newRole.home_url = this.home_url;
     this.newRole.status = true;
-    this.newRole.villages_assigned = this.villages_assigned;
+    this.newRole.send_remittance = this.send_remittance;
     this.newRole.display_dashboard = this.display_dashboard;
     this.roleService.saveRole(this.newRole).then(
       res => {
          if (!res['success']) {
-          toastr.error(' Sorry, unable to create a user role right now, please try again soon');
+          this.toastr.error(' Sorry, unable to create a user role right now, please try again soon', '', this.toastr_options);
         } else {
-          toastr.success('Success !!!');
+          this.toastr.success('Success !!!', '', this.toastr_options);
           this.router.navigate(['/roles']);
         }
       },

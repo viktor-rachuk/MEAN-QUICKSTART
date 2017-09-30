@@ -2,9 +2,12 @@ import { Component, ViewChild, OnInit, ViewEncapsulation } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { CompanyService } from '../../services/company.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CurrentpermissionService } from '../../services/currentpermission.service';
+import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
 declare var $: any;
-declare var swal: any;
+import swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-users',
@@ -20,16 +23,24 @@ export class UsersComponent implements OnInit {
   temp: any = [];
   user: any;
   location: Location;
-  user_role; any;
+  user_role: any;
   user_permission: any;
   filterUserType: any;
   customertype: any;
   selectedUsers: any = [];
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private usersService: UsersService,
     private companyService: CompanyService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
+    private permissionService: CurrentpermissionService,
+
     ) {
     this.user = JSON.parse(localStorage.getItem('user'));
     if (this.user.special_permissions) {
@@ -37,6 +48,19 @@ export class UsersComponent implements OnInit {
     }
     if (this.user.role) {
       this.user_permission = this.user.role;
+    }
+    if (this.user.accounttype !== 'super') {
+      if (!this.user_permission.customer.create &&
+        !this.user_permission.customer.edit &&
+        !this.user_permission.customer.delete &&
+        !this.user_permission.customer.view &&
+        !this.user_permission.staff.create &&
+        !this.user_permission.staff.edit &&
+        !this.user_permission.staff.delete &&
+        !this.user_permission.staff.view) {
+        window.history.back();
+        this.toastr.error('You have no permission to access users!', 'Permission Error', this.toastr_options);
+      }
     }
   }
 
@@ -132,12 +156,8 @@ export class UsersComponent implements OnInit {
     if (event.target.checked) {
       this.selectedUsers.push(event.target.value);
     } else {
-
-      for (let i = 0; i < this.selectedUsers.length; i++) {
-        if (this.selectedUsers[i] === event.target.value) {
-          this.selectedUsers.splice(i, 1);
-        }
-      }
+      // const index = this.selectedUsers.findIndex(x => x === event.target.value);
+      this.selectedUsers.splice(this.selectedUsers.indexOf(event.target.value), 1);
     }
   }
 

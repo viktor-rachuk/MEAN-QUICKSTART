@@ -4,32 +4,35 @@ import { TreeviewItem, TreeviewConfig } from 'ngx-treeview';
 import { CompanyService } from '../../../services/company.service';
 import { StoresService } from '../../../services/stores.service';
 import { UsersService } from '../../../services/users.service';
+import { RegionService } from '../../../services/region.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { CurrentpermissionService } from '../../../services/currentpermission.service';
+
+import { ToastrService } from 'ngx-toastr';
 declare var $: any;
-declare var toastr: any;
 @Component({
   selector: 'app-createcompany',
   templateUrl: './createcompany.component.html',
   styleUrls: ['./createcompany.component.css']
 })
 export class CreatecompanyComponent implements OnInit {
-  company = {};
+  company: any = {};
   user: any;
-  company_info = {};
-  account_info = {};
-  address = {};
-  companies: any;
+  company_info: any = {};
+  account_info: any = {};
+  address: any = {};
+  companies: any = [];
   items: TreeviewItem[];
-  stores: any;
+  stores: any = [];
   logoUrl: string;
   companies_structure = { // for display company structure
     'parent': '',
     'childs': []
   };
-  child = {}; // for display company structure detail
-  child_info = {};
-  child_address = {};
-  child_account = {};
+  child: any = {}; // for display company structure detail
+  child_info: any = {};
+  child_address: any = {};
+  child_account: any = {};
   logo: File;
   filesToLogo: Array<File> = [];
   logoChanged: boolean;
@@ -44,45 +47,36 @@ export class CreatecompanyComponent implements OnInit {
   });
   company_permission: any;
   parent: any;
-  regionData = {
-    'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-    'Auckland': ['Auckland City', 'Franklin', 'Hauraki Gulf Islands', 'Manukau City',
-    'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-    'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua', 'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-    'Coromandel': ['Thames-Coromandel'],
-    'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-    'Gisborne': ['Gisborne'],
-    'Central North Island' : ['Ruapehu', 'Taupo'],
-    'Hawkes Bay' : ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-    'Taranaki' : ['New Plymouth', 'South Taranaki', 'Stratford'],
-    'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-    'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-    'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-    'Marlborough': ['Kaikoura', 'Marlborough'],
-    'Nelson & Bays': ['Nelson', 'Tasman'],
-    'West Coast': ['Buller', 'Grey', 'Westland'],
-    'Canterbury': ['Ashburton', 'Banks Peninsula', 'Christchurch City',
-    'Hurunui', 'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-    'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-    'Otago' : ['Clutha', 'Dunedin City', 'Waitaki'],
-    'Southland' : ['Gore', 'Invercargill City', 'Southland']
+  regionData: any = {};
+  regions: any = [];
+  cities: any = [];
+  toastr_options = {
+        'positionClass': 'toast-bottom-right',
+        'closeButton': true,
+        'progressBar': true
   };
-  regions = Object.keys(this.regionData);
-  cities: any;
   constructor(
     private http: Http,
     private companyService: CompanyService,
     private storeService: StoresService,
     private userService: UsersService,
-    private router: Router
+    private regionService: RegionService,
+    private toastr: ToastrService,
+    private router: Router,
+    private permissionService: CurrentpermissionService
   ) {
+    this.regionData = this.regionService.getRegionData();
+    this.regions = Object.keys(this.regionData);
     this.user = JSON.parse(localStorage.getItem('user'));
-    if (this.user.special_permissions) {
-      this.company_permission = this.user.special_permissions['company'];
-    }
-    if (this.user.role) {
-      this.company_permission = this.user.special_permissions['company'];
-    }
+    this.permissionService.getPermissions((permissions) => {
+      this.company_permission = permissions.company;
+      if (permissions.user_type !== 'super') {
+        if (!this.company_permission.create) {
+          window.history.back();
+          this.toastr.error('You have no permission to create company!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
    }
   ngOnInit() {
     this.company = {
@@ -97,14 +91,6 @@ export class CreatecompanyComponent implements OnInit {
     this.logoUrl = 'assets/images/default-logo.jpg';
     this.getAllCompanies();
     this.getAllStores();
-    // Init UI elements
-    toastr.options = {
-        'debug': false,
-        'newestOnTop': false,
-        'positionClass': 'toast-bottom-right',
-        'closeButton': true,
-        'progressBar': true
-    };
   }
   // Get All Companies
   getAllCompanies() {
@@ -116,7 +102,7 @@ export class CreatecompanyComponent implements OnInit {
           parents.push(this.companies[i].name);
         }
       }
-      console.log(parents);
+      // console.log(parents);
     }, err => {
       console.log(err);
     });
@@ -182,7 +168,7 @@ export class CreatecompanyComponent implements OnInit {
   selectChild (event) {
     for (let i = 0; i < this.companies.length; i ++) {
       if (this.companies[i].name === event) {
-        console.log(this.companies[i]);
+        // console.log(this.companies[i]);
         this.child = this.companies[i];
         this.child_info = this.companies[i].company_info;
         this.child_address = this.companies[i].company_info.address;
@@ -250,10 +236,10 @@ export class CreatecompanyComponent implements OnInit {
     }
     this.companyService.createCompany(this.company).then(res => {
       if (res['success'] === true) {
-        toastr.success(res['msg']);
+        this.toastr.success(res['msg'], '', this.toastr_options);
         this.router.navigate(['/companies']);
       } else {
-        toastr.error(res['msg']);
+        this.toastr.error(res['msg'], '', this.toastr_options);
       }
     }, err => {
       console.log('Something went wrong!!!-->' + err);

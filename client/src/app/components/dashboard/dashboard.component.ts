@@ -1,4 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, AfterContentInit} from '@angular/core';
+import { CurrentpermissionService } from '../../services/currentpermission.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 declare var $: any;
 declare var Morris: any;
 
@@ -7,10 +11,28 @@ declare var Morris: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
-  constructor() {}
+export class DashboardComponent implements AfterContentInit {
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
+  constructor(
+    private permissionService: CurrentpermissionService,
+    private toastr: ToastrService,
+    private router: Router
+    ) {
+    this.permissionService.getPermissions((permissions) => {
+      if (permissions.user_type !== 'super') {
+        if (!permissions.dashboard) {
+          window.history.back();
+          this.toastr.error('You have no permission to access dashboard!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
+  }
 
-  ngOnInit() {
+  ngAfterContentInit() {
     Morris.Bar({
       element: 'morris-bar',
       data: [

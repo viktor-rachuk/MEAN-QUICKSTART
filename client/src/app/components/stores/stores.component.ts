@@ -3,8 +3,10 @@ import { Location } from '@angular/common';
 import { StoresService } from '../../services/stores.service';
 import { CompanyService } from '../../services/company.service';
 import { UsersService } from '../../services/users.service';
-
-declare var swal: any;
+import { RegionService } from '../../services/region.service';
+import { CurrentpermissionService } from '../../services/currentpermission.service';
+import { ToastrService } from 'ngx-toastr';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-stores',
@@ -23,42 +25,35 @@ export class StoresComponent implements OnInit {
   filteredStores: any;
   filterRegion: any;
   filterCity: any;
-  regionData = { 'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-  'Auckland': ['Auckland City', 'Franklin', 'Hauraki Gulf Islands', 'Manukau City',
-  'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-  'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua', 'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-  'Coromandel': ['Thames-Coromandel'],
-  'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-  'Gisborne': ['Gisborne'],
-  'Central North Island' : ['Ruapehu', 'Taupo'],
-  'Hawkes Bay' : ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-  'Taranaki' : ['New Plymouth', 'South Taranaki', 'Stratford'],
-  'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-  'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-  'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-  'Marlborough': ['Kaikoura', 'Marlborough'],
-  'Nelson & Bays': ['Nelson', 'Tasman'],
-  'West Coast': ['Buller', 'Grey', 'Westland'],
-  'Canterbury': ['Ashburton', 'Banks Peninsula', 'Christchurch City',
-  'Hurunui', 'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-  'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-  'Otago' : ['Clutha', 'Dunedin City', 'Waitaki'],
-  'Southland' : ['Gore', 'Invercargill City', 'Southland']
-};
-regions = Object.keys(this.regionData);
-cities: any;
+  regionData: any = {};
+  regions: any = [];
+  cities: any = [];
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
 constructor(
   private storeService: StoresService,
   private userService: UsersService,
-  private companyService: CompanyService
+  private companyService: CompanyService,
+  private regionService: RegionService,
+  private toastr: ToastrService,
+  private permissionService: CurrentpermissionService,
+
   ) {
+  this.regionData = this.regionService.getRegionData();
+  this.regions = Object.keys(this.regionData);
   this.user = JSON.parse(localStorage.getItem('user'));
-  if (this.user.special_permissions) {
-    this.store_permission = this.user.special_permissions['store'];
-  }
-  if (this.user.role) {
-    this.store_permission = this.user.role['store'];
-  }
+    this.permissionService.getPermissions((permissions) => {
+      this.store_permission = permissions.store;
+    if (permissions.user_type !== 'super') {
+      if (!this.store_permission.create && !this.store_permission.edit && !this.store_permission.delete && !this.store_permission.view) {
+        window.history.back();
+        this.toastr.error('You have no permission to access stores!', 'Permission Error', this.toastr_options);
+      }
+    }
+  });
 }
 
 ngOnInit() {
@@ -165,11 +160,7 @@ selectElement(event) {
   if (event.target.checked) {
     this.selectedStores.push(event.target.value);
   } else {
-    for (let i = 0; i < this.selectedStores.length; i++) {
-      if (this.selectedStores[i] === event.target.value) {
-        this.selectedStores.splice(i, 1);
-      }
-    }
+    this.selectedStores.splice(this.selectedStores.indexOf(event.target.value), 1);
   }
 }
 

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StoresService } from '../../../services/stores.service';
+import { ToastrService } from 'ngx-toastr';
+
 // To use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-supportoffice',
@@ -12,18 +13,14 @@ declare var toastr: any;
 export class SupportofficeComponent implements OnInit {
 
   office: any = {};
-
-  constructor(private storeService: StoresService) { }
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
+  constructor(private storeService: StoresService, private toastr: ToastrService) { }
 
   ngOnInit() {
-  	// Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
     this.getSupportOffice();
   }
 
@@ -41,9 +38,9 @@ export class SupportofficeComponent implements OnInit {
   onSubmit() {
     this.storeService.updateStore(this.office['_id'], JSON.stringify(this.office)).then((result) => {
       if (!result['success']) {
-        toastr.error('Sorry, cannot edit this store, please try again');
+        this.toastr.error('Sorry, cannot edit this store, please try again', '', this.toastr_options);
       } else {
-        toastr.success('Success !!!');
+        this.toastr.success('Success !!!', '', this.toastr_options);
         window.history.back();
       }
     }, (err) => {

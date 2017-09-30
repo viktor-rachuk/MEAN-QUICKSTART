@@ -1,14 +1,14 @@
-import { StartPage } from './app.po';
+import { CcportalPage } from './app.po';
 
-describe('start App', () => {
-  let page: StartPage;
+describe('ccportal App', () => {
+  let page: CcportalPage;
 
   beforeEach(() => {
-    page = new StartPage();
+    page = new CcportalPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display message saying app works', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to app!');
+    expect(page.getParagraphText()).toEqual('app works!');
   });
 });

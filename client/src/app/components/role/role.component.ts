@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoleService } from '../../services/role.service';
-declare var swal: any;
+import { CurrentpermissionService } from '../../services/currentpermission.service';
+import swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-role',
@@ -10,22 +12,31 @@ declare var swal: any;
 })
 export class RoleComponent implements OnInit {
   public loading = false;
-  roles: any;
-  selectedRoles: any;
+  roles: any = [];
+  selectedRoles: any = [];
   user: any;
-  location: Location;
   role_permission: any;
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private toastr: ToastrService,
+    private permissionService: CurrentpermissionService
     ) {
     this.user = JSON.parse(localStorage.getItem('user'));
-    if (this.user.special_permissions) {
-      this.role_permission = this.user.special_permissions['role'];
-    }
-    if (this.user.role) {
-      this.role_permission = this.user.role['role'];
-    }
+    this.permissionService.getPermissions((permissions) => {
+      this.role_permission = permissions.role;
+      if (permissions.user_type !== 'super') {
+        if (!this.role_permission.create && !this.role_permission.edit && !this.role_permission.delete && !this.role_permission.view) {
+          window.history.back();
+          this.toastr.error('You have no permission to access roles!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
   }
   ngOnInit() {
     this.roles = [];
@@ -35,7 +46,6 @@ export class RoleComponent implements OnInit {
 
   getAllRoles() {
     this.loading = true;
-    this.roles = [];
     this.roleService.getAllRoles().then(
       res => {
         this.loading = false;
@@ -51,11 +61,7 @@ export class RoleComponent implements OnInit {
     if (event.target.checked) {
       this.selectedRoles.push(event.target.value);
     } else {
-      for (let i = 0; i < this.selectedRoles.length; i++) {
-        if (this.selectedRoles[i] === event.target.value) {
-          this.selectedRoles.splice(i, 1);
-        }
-      }
+      this.selectedRoles.splice(this.selectedRoles.indexOf(event.target.value), 1);
     }
   }
 

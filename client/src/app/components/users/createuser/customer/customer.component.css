@@ -1,14 +1,5 @@
-.password_not_match {
-	color: #a94442;
-}
 
-.villages_list {
-	height:300px;
-	width:100%;
-	overflow:hidden;
-	overflow-y:scroll;
-	list-style:none;
-}
+
 /*span {
 	margin-left: 30px;
 }*/

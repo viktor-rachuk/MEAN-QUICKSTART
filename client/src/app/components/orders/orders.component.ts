@@ -4,10 +4,10 @@ import { Location } from '@angular/common';
 import { StoresService } from '../../services/stores.service';
 import { CompanyService } from '../../services/company.service';
 import { SendremittanceService } from '../../services/sendremittance.service';
-
-
+import { CurrentpermissionService } from '../../services/currentpermission.service';
+import { ToastrService } from 'ngx-toastr';
 declare var $: any;
-declare var swal: any;
+import swal from 'sweetalert2';
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
@@ -16,44 +16,56 @@ declare var swal: any;
 })
 export class OrdersComponent implements OnInit {
   public loading = false;
-  location: Location;
   user: any;
   order_permission: any;
+  send_remittance_permission: any;
   rows = [];
   temp = [];
-  oinvoices = [];
-  invoices = [];
-  selectedOrders = [];
-  stores = [];
-  companies = [];
+  oinvoices: any = [];
+  invoices: any = [];
+  selectedOrders: any = [];
+  stores: any = [];
+  companies: any = [];
   codes = [];
   fType = 'All';
   fStore = 'All';
   fVillage = 'All';
   sVillage = 'All';
-  sumAmount = 0;
-  sumBalance = 0;
+  sumAmount: any;
+  sumBalance: any;
   invoiceCount = 0;
   tickCount = 0;
-  selectedItem = {};
-  summaries = [];
-  oSummaries = [];
-  summariesTotal = {};
+  selectedItem: any = {};
+  summaries: any = [];
+  oSummaries: any = [];
+  summariesTotal: any = {};
   email_address = ''; // to send send remitance
   email_data = []; // invoices to send to support office (carpet court)
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
     private storeService: StoresService,
     private companyService: CompanyService,
-    private sendRemittance: SendremittanceService
+    private toastr: ToastrService,
+    private sendRemittance: SendremittanceService,
+    private permissionService: CurrentpermissionService
     ) {
     this.user = JSON.parse(localStorage.getItem('user'));
-    if (this.user.special_permissions) {
-      this.order_permission = this.user.special_permissions['order'];
-    }
-    if (this.user.role) {
-      this.order_permission = this.user.role['order'];
-    }
+    console.log(this.user);
+    this.permissionService.getPermissions((permissions) => {
+      this.order_permission = permissions.order;
+      this.send_remittance_permission = permissions.send_remittance;
+      if (permissions.user_type !== 'super') {
+        if (!this.order_permission.create && !this.order_permission.edit && !this.order_permission.delete && !this.order_permission.view) {
+          window.history.back();
+          this.toastr.error('You have no permission to access orders!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
     this.storeService.getSupportOffice().then(res => {
       this.email_address = res['email'];
     }, err => {
@@ -62,7 +74,7 @@ export class OrdersComponent implements OnInit {
   }
 
   async ngOnInit() {
-   this.loading = true;
+    this.loading = true;
     await this.fetch(data => {
       const xml = $.parseXML(data).getElementsByTagName('row');
       // console.log(xml);
@@ -71,13 +83,13 @@ export class OrdersComponent implements OnInit {
         const InvDate = $(xml[i]).find('DateInvoiced')[0].textContent;
         const Store = $(xml[i]).find('StoreName')[0].textContent;
         const Village = $(xml[i]).find('Village')[0].textContent;
-        const Balance = $(xml[i]).find('Balance')[0].textContent;
+        const Balance = parseFloat($(xml[i]).find('Balance')[0].textContent);
         const AmountToPay = $(xml[i]).find('Balance')[0].textContent;
         const Period = $(xml[i]).find('Period')[0].textContent;
         const MonthsOld = $(xml[i]).find('MonthsOld')[0].textContent;
         const Value = $(xml[i]).find('Value')[0].textContent;
         const GST = $(xml[i]).find('GST')[0].textContent;
-        const InvoiceTotal = $(xml[i]).find('InvoiceTotal')[0].textContent;
+        const InvoiceTotal = parseFloat($(xml[i]).find('InvoiceTotal')[0].textContent);
         const PONum = $(xml[i]).find('PONum')[0].textContent;
         const Code = $(xml[i]).find('Code')[0].textContent;
         const CommonName = $(xml[i]).find('CommonName')[0].textContent;
@@ -86,7 +98,11 @@ export class OrdersComponent implements OnInit {
         invoice['invdate'] = InvDate;
         invoice['store'] = Store;
         invoice['village'] = Village;
-        invoice['balance'] = Balance;
+        if (Balance !== undefined) {
+          invoice['balance'] = Balance;
+        } else {
+          invoice['balance'] = 0;
+        }
         invoice['amounttopay'] = Balance;
         invoice['checked'] = false;
         invoice['period'] = Period;
@@ -112,21 +128,48 @@ export class OrdersComponent implements OnInit {
       }
 
       for (let i = 0; i < this.codes.length; i++) {
-        const summary = {};
+        const summary = {
+          'older': 0,
+          'three': 0,
+          'two': 0,
+          'one': 0,
+          'current': 0
+        };
         for ( let j = 0; j < this.invoices.length; j++) {
           if (this.codes[i] === this.invoices[j].code) {
             summary['village'] = this.invoices[j].village;
+            const invoiceTotal = this.invoices[j].invoicetotal;
             if (this.invoices[j].period === 'Current') {
-              summary['current'] = parseFloat(this.invoices[j].invoicetotal);
+             if ( summary['current'] === 0) {
+               summary['current'] = invoiceTotal;
+             } else {
+               summary['current'] += invoiceTotal;
+             }
             } else {
               if (parseFloat(this.invoices[j].monthsold) > 3) {
-                summary['older'] = parseFloat(this.invoices[j].invoicetotal);
+                if ( summary['older'] === 0) {
+                   summary['older'] = invoiceTotal;
+                 } else {
+                   summary['older'] += invoiceTotal;
+                 }
               } else if (parseFloat(this.invoices[j].monthsold) === 3) {
-                summary['three'] = parseFloat(this.invoices[j].invoicetotal);
+                if ( summary['three'] === 0) {
+                   summary['three'] = invoiceTotal;
+                 } else {
+                   summary['three'] += invoiceTotal;
+                 }
               } else if (parseFloat(this.invoices[j].monthsold) === 2) {
-                summary['two'] = parseFloat(this.invoices[j].invoicetotal);
+                if ( summary['two'] === 0) {
+                   summary['two'] = invoiceTotal;
+                 } else {
+                   summary['two'] += invoiceTotal;
+                 }
               } else {
-                summary['one'] = parseFloat(this.invoices[j].invoicetotal);
+                if ( summary['one'] === 0) {
+                   summary['one'] = invoiceTotal;
+                 } else {
+                   summary['one'] += invoiceTotal;
+                 }
               }
             }
           }
@@ -201,20 +244,20 @@ export class OrdersComponent implements OnInit {
     for ( let i = 0; i < this.summaries.length; i++) {
       if (this.summaries[i]['visible'] === true) {
         if (this.summaries[i].older) {
-          olderTotal += this.summaries[i].older;
+          olderTotal += parseFloat(this.summaries[i].older);
         }
 
         if (this.summaries[i].three) {
-          threeTotal += this.summaries[i].three;
+          threeTotal += parseFloat(this.summaries[i].three);
         }
         if (this.summaries[i].two) {
-          twoTotal += this.summaries[i].two;
+          twoTotal += parseFloat(this.summaries[i].two);
         }
         if (this.summaries[i].one) {
-          oneTotal += this.summaries[i].one;
+          oneTotal += parseFloat(this.summaries[i].one);
         }
         if (this.summaries[i].current) {
-          currentTotal += this.summaries[i].current;
+          currentTotal += parseFloat(this.summaries[i].current);
         }
       }
     }
@@ -230,9 +273,7 @@ export class OrdersComponent implements OnInit {
   getAllCompanies() {
     this.companyService.getAllCompanies().then(res => {
       if (this.user.accounttype === 'super' || this.user.accounttype === 'staff') {
-        for (let i = 0; i < Object.keys(res).length; i ++) {
-          this.companies.push(res[i]);
-        }
+        this.companies = res;
         this.getAllStores();
         this.filterInvoices();
         this.filterSummary();
@@ -263,7 +304,7 @@ export class OrdersComponent implements OnInit {
 
   fetch(cb) {
     const req = new XMLHttpRequest();
-    req.open('GET', 'assets/data/Summerset_Invoices.xml', true);
+    req.open('GET', '/data/Summerset_Invoices.xml', true);
     req.onload = () => {
       cb(req.response);
     };
@@ -316,16 +357,15 @@ export class OrdersComponent implements OnInit {
   calculateSum() {
     this.sumAmount = 0;
     this.sumBalance = 0;
-
     for (let i = 0; i < this.invoices.length; i++) {
       const invoice = this.invoices[i];
       if (invoice.checked) {
-        if (isNaN(parseInt(invoice.amounttopay))) {
+        if (isNaN(parseFloat(invoice.amounttopay))) {
           this.sumAmount += 0;
         } else {
-          this.sumAmount += parseInt(invoice.amounttopay);
+          this.sumAmount += parseFloat(invoice.amounttopay);
         }
-        this.sumBalance += parseInt(invoice.balance);
+        this.sumBalance += parseFloat(invoice.balance);
       }
     }
   }
@@ -349,7 +389,6 @@ export class OrdersComponent implements OnInit {
     }
 
     this.calculateSum();
-    console.log(this.email_data);
   }
 
   showDetails(item) {
@@ -358,38 +397,67 @@ export class OrdersComponent implements OnInit {
   }
 
   sendEmail() {
-    swal({
-      title: 'Are you sure?',
-      text: 'You will Send Email to Carpet Court!',
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, please!',
-      cancelButtonText: 'No, keep it'
-    }).then(() => {
-      const content = {};
-      content['sumAmount'] = this.sumAmount;
-      content['sumBalance'] = this.sumBalance;
-      content['type'] = 'remitance';
-      content['email'] = this.email_address;
-      this.sendRemittance.sendRemittance(content).then(res => {
-        console.log(res);
-      }, err => {
-        console.log(err);
-      });
-      swal(
-        'Sent Email Succesffully!',
-        'Sent Email To Carpet Court.',
-        'success'
-        );
-    }, function(dismiss) {
-      // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
-      if (dismiss === 'cancel') {
+    if (this.email_data.length !== 0) {
+      swal({
+        title: 'Send remittance advice?',
+        html: 'A notification will be sent to ' + '<br>' + this.user.email + '<br>' + this.email_address,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, please!',
+        cancelButtonText: 'No, not yet'
+      }).then(() => {
         swal(
-          'Cancelled',
-          'Your imaginary file is safe :)',
-          'error'
-          );
-      }
-    });
+          {
+            title: 'Remittance sent successfully!',
+            html: 'Notification of this advice were sent to' + '<br>'
+            + this.user.email + '<br>' + this.email_address
+          }
+        );
+        const content = {};
+        content['data'] = this.email_data;
+        content['user'] = this.user.username;
+        console.log(this.user);
+        content['accounttype'] = this.user.accounttype;
+        content['totalamount'] = 0;
+        createdAt((current_time) => {
+          content['created_at'] = current_time;
+        });
+        content['totalbal'] = 0;
+        for (let i = 0; i < this.email_data.length; i ++) {
+          content['totalamount'] += parseFloat(this.email_data[i].amounttopay);
+          content['totalbal'] += parseFloat(this.email_data[i].balance);
+        }
+        content['support_email'] = this.email_address;
+        content['sender_email'] = this.user.email;
+        this.sendRemittance.sendRemittance(content).then(res => {
+          if (res['success']) {
+            this.toastr.info('Sent remittance email!', '', this.toastr_options);
+          } else {
+            this.toastr.error('Failed to send  remittance email!', '', this.toastr_options);
+          }
+        }, err => {
+          this.toastr.error('Failed to send  remittance email!', '', this.toastr_options);
+        });
+      }, (dismiss) => {
+        // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+        if (dismiss === 'cancel') {
+          swal(
+            'Cancelled',
+            'Cancelled Remittance advice has not been sent. :)',
+            'error'
+            );
+        }
+      });
+    } else {
+      this.toastr.error('You did not selected any order or invoice!', '', this.toastr_options);
+    }
   }
 }
+
+  function createdAt(callback) {
+    const today = new Date();
+    const date = today.getDate() + '/' + (today.getMonth() + 1 ) + '/' + today.getFullYear();
+    const time = today.toLocaleString('en-NZ', { hour: 'numeric', minute : 'numeric', hour12: true });
+    const created_at = time + '  ' + date;
+    return callback(created_at);
+  }

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { UnittypesService } from '../../../../services/unittypes.service';
 import { ColschemasService } from '../../../../services/colschemas.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 // To use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-editcol',
@@ -15,29 +16,25 @@ export class EditcolComponent implements OnInit {
   colSchema: any = {};
   unitTypes: any = [];
   unittypes_assigned: any = [];
-  newArea = {};
-  selectedAreas = [];
-  selectedArea: any;
-  areas : any;
-
+  newArea: any = {};
+  selectedAreas: any = [];
+  selectedArea: any = {};
+  areas: any = [];
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private unitTypesService: UnittypesService,
-    private colSchemaService: ColschemasService
+    private colSchemaService: ColschemasService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
-    this.selectedArea = {};
-    this.areas = [];
     this.getColSchemaDetails(this.route.snapshot.params['id']);
-    toastr.options = {/* Init UI elements*/
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
   }
 
   getColSchemaDetails(id) {
@@ -69,7 +66,6 @@ export class EditcolComponent implements OnInit {
   }
 
   selectArea(event) {
-    console.log(event.target.value);
     if (event.target.checked) {
       this.selectedAreas.push(event.target.value);
     } else {
@@ -81,7 +77,6 @@ export class EditcolComponent implements OnInit {
     }
   }
   editArea(item) {
-    this.selectedArea = {};
     this.selectedArea = item;
   }
 
@@ -120,9 +115,9 @@ export class EditcolComponent implements OnInit {
     this.colSchemaService.updateCol(this.colSchema['_id'], this.colSchema).then(
       res => {
         if (!res['success']) {
-          toastr.error(' Sorry, unable to edit a colourschema right now, please try again soon');
+          this.toastr.error(' Sorry, unable to edit a colourschema right now, please try again soon', '', this.toastr_options);
         } else {
-          toastr.success('Success !!!');
+          this.toastr.success('Success !!!', '', this.toastr_options);
           this.router.navigate(['/col-schema']);
         }
         }, err => {

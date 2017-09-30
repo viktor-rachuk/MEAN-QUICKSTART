@@ -5,9 +5,13 @@ import { Http } from '@angular/http';
 import { CompanyService } from '../../../services/company.service';
 import { StoresService } from '../../../services/stores.service';
 import { UsersService } from '../../../services/users.service';
+import { RegionService } from '../../../services/region.service';
+import { ToastrService } from 'ngx-toastr';
+import { CurrentpermissionService } from '../../../services/currentpermission.service';
+
+
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-editcompany',
@@ -16,13 +20,13 @@ declare var toastr: any;
 })
 export class EditcompanyComponent implements OnInit {
   filesToUpload: Array<File> = [];
-  user; any;
+  user: any;
   items: TreeviewItem[];
   currentCompany: any;
-  company_info = {};
-  account_info = {};
-  address = {};
-  companies: any;
+  company_info: any = {};
+  account_info: any = {};
+  address: any = {};
+  companies: any = [];
   config = TreeviewConfig.create({
     hasAllCheckBox: false,
     hasFilter: true,
@@ -34,66 +38,57 @@ export class EditcompanyComponent implements OnInit {
     'parent': '',
     'childs': []
   };
-  child = {}; // for display company structure detail
-  child_info = {};
-  child_address = {};
-  child_account = {};
-  stores: any;
+  child: any = {}; // for display company structure detail
+  child_info: any = {};
+  child_address: any = {};
+  child_account: any = {};
+  stores: any = [];
   logoUrl: string;
   users: any;
   logo: File;
   filesToLogo: Array<File> = [];
   logoChanged: boolean;
-  assigned_staffs = [];
-  assigned_stores = [];
-  key_contacts = [];
-  regionData = {
-    'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-    'Auckland': ['Auckland City', 'Franklin', 'Hauraki Gulf Islands',
-    'Manukau City', 'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-    'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua',
-    'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-    'Coromandel': ['Thames-Coromandel'],
-    'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-    'Gisborne': ['Gisborne'],
-    'Central North Island' : ['Ruapehu', 'Taupo'],
-    'Hawkes Bay' : ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-    'Taranaki' : ['New Plymouth', 'South Taranaki', 'Stratford'],
-    'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-    'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-    'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-    'Marlborough': ['Kaikoura', 'Marlborough'],
-    'Nelson & Bays': ['Nelson', 'Tasman'],
-    'West Coast': ['Buller', 'Grey', 'Westland'],
-    'Canterbury': ['Ashburton', 'Banks Peninsula',
-    'Christchurch City', 'Hurunui', 'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-    'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-    'Otago' : ['Clutha', 'Dunedin City', 'Waitaki'],
-    'Southland' : ['Gore', 'Invercargill City', 'Southland']
+  assigned_staffs: any = [];
+  assigned_stores: any = [];
+  key_contacts: any = [];
+  regionData: any = {};
+  regions: any = [];
+  cities: any = [];
+  toastr_options = {
+    'positionClass': 'toast-bottom-right',
+    'closeButton': true,
+    'progressBar': true
   };
-  regions = Object.keys(this.regionData);
-  cities: any;
   constructor(
     private route: ActivatedRoute,
     private companyService: CompanyService,
     private storesService: StoresService,
     private usersService: UsersService,
+    private regionService: RegionService,
     private router: Router,
-    private http: Http
+    private toastr: ToastrService,
+    private http: Http,
+    private permissionService: CurrentpermissionService
   ) {
+    this.regionData = this.regionService.getRegionData();
+    this.regions = Object.keys(this.regionData);
     this.user = JSON.parse(localStorage.getItem('user'));
-    if (this.user.special_permissions) {
-      this.company_permission = this.user.special_permissions['company'];
-    }
-    if (this.user.role) {
-      this.company_permission = this.user.special_permissions['company'];
-    }
     this.logoUrl = 'assets/images/default-logo.jpg';
     this.usersService.getAllStaffs().then(res => {
-      this.users= res;
-      console.log(this.users);
+      this.users = res;
+      // console.log(this.users);
     }, err => {
       console.log(err);
+    });
+
+    this.permissionService.getPermissions((permissions) => {
+      this.company_permission = permissions.company;
+      if (permissions.user_type !== 'super') {
+        if (!this.company_permission.edit) {
+          window.history.back();
+          this.toastr.error('You have no permission to edit company!', 'Permission Error', this.toastr_options);
+        }
+      }
     });
     this.getAllCompanies();
   }
@@ -104,18 +99,10 @@ export class EditcompanyComponent implements OnInit {
       status: Boolean,
     };
     this.route.params.forEach(params => {
-      let id = params['id'];
+      const id = params['id'];
       // this.getCompanyDetails(this.route.snapshot.params['id']);
       this.getCompanyDetails(id);
     });
-    // Init UI elements
-    toastr.options = {
-        'debug': false,
-        'newestOnTop': false,
-        'positionClass': 'toast-bottom-right',
-        'closeButton': true,
-        'progressBar': true
-    };
   }
 
   getAllCompanies() {
@@ -137,8 +124,8 @@ export class EditcompanyComponent implements OnInit {
         this.assigned_stores = res['assigned_stores'];
         this.key_contacts = res['key_contacts']; // currentcompany's key contacts table
         if (this.currentCompany.parent) {
-          this.companyService.getCompanyStructure(this.currentCompany.parent).then(res => {
-            const item = new TreeviewItem(res[0]);
+          this.companyService.getCompanyStructure(this.currentCompany.parent).then(respond => {
+            const item = new TreeviewItem(respond[0]);
             item['collapsed'] = false;
             const items = [];
             items.push(item);
@@ -146,8 +133,8 @@ export class EditcompanyComponent implements OnInit {
           });
         }
         if (!this.currentCompany.parent) {
-          this.companyService.getCompanyStructure(this.currentCompany._id).then(res => {
-            const item = new TreeviewItem(res[0]);
+          this.companyService.getCompanyStructure(this.currentCompany._id).then(respond => {
+            const item = new TreeviewItem(respond[0]);
             item['collapsed'] = false;
             const items = [];
             items.push(item);
@@ -215,6 +202,12 @@ export class EditcompanyComponent implements OnInit {
     }
   }
 
+  // Select Region
+  selectRegion(event) {
+    const region = event.target.value;
+    this.cities = this.regionData[region];
+  }
+
   selectParent (event) { // select parent company, and add this company to company structure
     if (event.target.value.length !== 0) {
       this.companyService.getCompanyStructure(event.target.value).then(res => {
@@ -232,7 +225,6 @@ export class EditcompanyComponent implements OnInit {
   selectChild (event) {
     for (let i = 0; i < this.companies.length; i ++) {
       if (this.companies[i].name === event) {
-        console.log(this.companies[i]);
         this.child = this.companies[i];
         this.child_info = this.companies[i].company_info;
         this.child_address = this.companies[i].company_info.address;
@@ -266,9 +258,9 @@ export class EditcompanyComponent implements OnInit {
       .then(
         res => {
           if (!res['success']) {
-            toastr.error(res['msg']);
+            this.toastr.error(res['msg'], '', this.toastr_options);
           } else {
-            toastr.success('Success !!!');
+            this.toastr.success('Success !!!', '', this.toastr_options);
             this.router.navigate(['/companies']);
           }
         },

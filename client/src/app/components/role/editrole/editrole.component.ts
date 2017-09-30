@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleService } from '../../../services/role.service';
-import { VillagesService } from '../../../services/villages.service';
+import { ToastrService } from 'ngx-toastr';
+import { CurrentpermissionService } from '../../../services/currentpermission.service';
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-editrole',
@@ -21,27 +21,32 @@ export class EditroleComponent implements OnInit {
   status: any;
   company: any = {};
   display_dashboard: any;
-  villages: any;
-  villages_assigned: any;
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
+  send_remittance: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private roleService: RoleService,
-    private villagesService: VillagesService
-  ) {}
+    private toastr: ToastrService,
+    private permissionService: CurrentpermissionService
+  ) {
+    this.permissionService.getPermissions((permissions) => {
+      const role_permission = permissions.role;
+      if (permissions.user_type !== 'super') {
+        if (!role_permission.edit) {
+          window.history.back();
+          this.toastr.error('You have no permission to edit role!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
+  }
 
   ngOnInit() {
-    this.villages = [];
-    this.villages_assigned = [];
     this.getRoleDetails(this.route.snapshot.params['id']);
-    // Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
   }
 
   getRoleDetails(id) {
@@ -56,52 +61,12 @@ export class EditroleComponent implements OnInit {
         this.company = res['company'];
         this.status = res['status'];
         this.display_dashboard = res['display_dashboard'];
-        this.villages_assigned = res['villages_assigned'];
-        this.villagesService.getAllVils().then(
-          respond => {
-            this.villages = respond;
-            for ( let i = 0; i < this.villages.length; i++ ) {
-              for ( let j = 0; j < this.villages_assigned.length; j++ ) {
-                if (this.villages[i]._id === this.villages_assigned[j] ) {
-                 this.villages[i]['checked'] = true;
-                }
-              }
-            }
-          },
-
-          error => {
-            console.log(error);
-          }
-        );
-
+        this.send_remittance = res['send_remittance'];
       },
       err => {
         console.log(err);
       }
     );
-  }
-
-  selectVillage(event) {
-    if (event.target.checked) {
-      this.villages_assigned.push(event.target.value);
-    } else {
-      for (let i = 0; i < this.villages_assigned.length; i++) {
-        if (this.villages_assigned[i] === event.target.value) {
-          this.villages_assigned.splice(i, 1);
-        }
-      }
-    }
-  }
-  checkAllVillages(event) {
-    if (event.target.checked) {
-      for (let i = 0; i < this.villages.length; i++) {
-        this.villages[i]['checked'] = true;
-      }
-    } else {
-      for (let i = 0; i < this.villages.length; i++) {
-        this.villages[i]['checked'] = false;
-      }
-    }
   }
 
     // select All permission, deselect all
@@ -138,7 +103,7 @@ export class EditroleComponent implements OnInit {
           this.store['edit'] = false;
           this.order['edit'] = false;
         }
-      } else if(event.target.value === 'delete') {
+      } else if (event.target.value === 'delete') {
         if (event.target.checked) {
           this.staff['delete'] = true;
           this.customer['delete'] = true;
@@ -181,12 +146,13 @@ export class EditroleComponent implements OnInit {
     this.currentRole.role = this.role;
     this.currentRole.status = this.status;
     this.currentRole.display_dashboard = this.display_dashboard;
+    this.currentRole.send_remittance = this.send_remittance;
     this.roleService.updateRole(this.currentRole._id, this.currentRole).then(
       res => {
         if (!res['success']) {
-          toastr.error(' Sorry, unable to edit a user role right now, please try again soon');
+          this.toastr.error(' Sorry, unable to edit a user role right now, please try again soon', '', this.toastr_options);
         } else {
-          toastr.success('Success !!!');
+          this.toastr.success('Success !!!', '', this.toastr_options);
           this.router.navigate(['/roles']);
         }
       },

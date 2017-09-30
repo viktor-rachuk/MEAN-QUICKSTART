@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { RoleService } from '../../../../services/role.service';
 import { UsersService } from '../../../../services/users.service';
 import { StoresService } from '../../../../services/stores.service';
+import { ToastrService } from 'ngx-toastr';
 
 // TO use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'edit-staff',
@@ -17,34 +17,41 @@ declare var toastr: any;
 export class StaffEditComponent implements OnInit {
   @Input() user: any;
   staff: any;
+  email_valid = true;
+  old_email: any;
   user_info: any;
   currentCompanies: any = [];
-  customerPermission = {};
-  staffPermission = {};
-  storePermission = {};
-  orderPermission = {};
-  rolePermission = {};
-  companyPermission = {};
+  customerPermission: any = {};
+  staffPermission: any = {};
+  storePermission: any = {};
+  orderPermission: any = {};
+  rolePermission: any = {};
+  companyPermission: any = {};
   display_dashboard: any;
+  send_remittance = false;
   home_url: any;
   roles: any = [];
   stores: any = [];
   stores_assigned = [];
   currentUser: any;
   modalValid = true;
-
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private router: Router,
     private roleService: RoleService,
     private userService: UsersService,
-    private storeService: StoresService
-  ) {}
+    private storeService: StoresService,
+    private toastr: ToastrService
+    ) {}
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('user'));
-    this.roles = [];
-    this.stores = [];
     this.staff = this.user.user;
+    this.old_email = this.staff.email;
     this.stores_assigned = this.staff['stores_assigned'];
     this.user_info = this.user.user['user_info'];
     if (this.staff.special_permissions) {
@@ -57,25 +64,16 @@ export class StaffEditComponent implements OnInit {
         this.rolePermission = this.staff.special_permissions.role;
         this.home_url = this.staff.special_permissions.home_url;
         this.display_dashboard = this.staff.special_permissions.display_dashboard;
+        this.send_remittance = this.staff.special_permissions.send_remittance;
       } else {
         this.initPermission();
       }
     } else {
       this.initPermission();
     }
-
     this.getAllRoles();
     this.getAllStores();
-    // Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
-    };
   }
-
   // Init Permission
   initPermission() {
     this.staffPermission = {
@@ -170,6 +168,7 @@ export class StaffEditComponent implements OnInit {
     this.staff.special_permissions.company = this.companyPermission;
     this.staff.special_permissions.role = this.rolePermission;
     this.staff.special_permissions.display_dashboard = this.display_dashboard;
+    this.staff.special_permissions.send_remittance = this.send_remittance;
     this.staff.special_permissions.home_url = this.home_url;
     this.staff.role = '';
     this.modalValid = false;
@@ -245,6 +244,8 @@ export class StaffEditComponent implements OnInit {
   }
 
   onSubmit() {
+    this.staff.username = this.staff.username.trim();
+    this.staff.email = this.staff.email.trim();
     this.staff['user_info'] = this.user_info;
     this.staff['status'] = 'active';
     this.staff['accounttype'] = 'staff';
@@ -255,19 +256,37 @@ export class StaffEditComponent implements OnInit {
     this.userService.updateUser(this.staff['id'], this.staff).then(
       result => {
         if (!result['success']) {
-          toastr.error('Sorry, cannot edit this user, please try again');
+          this.toastr.error('Sorry, cannot edit this user, please try again', '', this.toastr_options);
         } else {
-          toastr.success('Success !!!');
+          this.toastr.success('Success !!!', '', this.toastr_options);
           this.router.navigate(['/users']);
         }
       },
       err => {
         console.log(err);
       }
-    );
+      );
   }
+
 
   cancel() {
     this.router.navigate(['/users']);
+  }
+  validateEmail(email: string) {
+    if (this.old_email !== email) {
+      this.userService.checkEmail(email).then(res => {
+        if (res['success']) {
+          this.email_valid = true;
+        } else {
+          this.email_valid = false;
+        }
+      }, err => {
+        console.log(err);
+      });
+    }
+  }
+
+  setEmailValid() {
+    this.email_valid = true;
   }
 }

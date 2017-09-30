@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { StoresService } from '../../../services/stores.service';
 import { UsersService } from '../../../services/users.service';
+import { RegionService } from '../../../services/region.service';
+import { ToastrService } from 'ngx-toastr';
+import { CurrentpermissionService } from '../../../services/currentpermission.service';
+
 import { ActivatedRoute, Router } from '@angular/router';
 // To use jQuery and toastr jQuery Plugins
 declare var $: any;
-declare var toastr: any;
 
 @Component({
   selector: 'app-store',
@@ -17,52 +20,56 @@ export class StoreComponent implements OnInit {
   store_info: any = {};
   account_info: any = {};
   address: any = {};
-  regionData = {'Northland': ['Far North', 'Kaipara', 'Whangarei'],
-            'Auckland': ['Auckland City', 'Franklin', 'Hauraki Gulf Islands', 'Manukau City',
-            'North Shore City', 'Papakura', 'Rodney', 'Waiheke Island', 'Waitakere City'],
-            'Bay Of Plenty': ['Kawerau', 'Opotiki', 'Rotorua', 'Tauranga', 'Wetern Bay Of Plenty', 'Whakatane'],
-            'Coromandel': ['Thames-Coromandel'],
-            'Waikato': ['Hamilton', 'Hauraki', 'Matamata-Piako', 'Otorohanga', 'South Waikato', 'Waikato', 'Waipa', 'Waitomo'],
-            'Gisborne': ['Gisborne'],
-            'Central North Island' : ['Ruapehu', 'Taupo'],
-            'Hawkes Bay' : ['Central Hawkes Bay', 'Hastings', 'Napier City', 'Wairoa'],
-            'Taranaki' : ['New Plymouth', 'South Taranaki', 'Stratford'],
-            'Manawatu / Wanganui ': ['Horowhenua', 'Manawatu', 'Palmerston North City', 'Rangitikei', 'Tararua', 'Wanganui'],
-            'Wairarapa': ['Carterton', 'Masterton', 'South Wairarapa'],
-            'Wellington': ['Kapiti', 'Lower Hutt City', 'Porirua City', 'Upper Hutt City', 'Wellington City'],
-            'Marlborough': ['Kaikoura', 'Marlborough'],
-            'Nelson & Bays': ['Nelson', 'Tasman'],
-            'West Coast': ['Buller', 'Grey', 'Westland'],
-            'Canterbury': ['Ashburton', 'Banks Peninsula', 'Christchurch City', 'Hurunui',
-            'Mackenzie', 'Selwyn', 'Timaru', 'Waimakariri', 'Waimate'],
-            'Central Otago / Lakes District': ['Central Otago', 'Queenstown', 'Wanaka'],
-            'Otago' : ['Clutha', 'Dunedin City', 'Waitaki'],
-            'Southland' : ['Gore', 'Invercargill City', 'Southland']
-
-  };
-  regions = Object.keys(this.regionData);
-  cities: any;
+  regionData: any = {};
+  regions: any = [];
+  cities: any = [];
   stores = [];
   users = [];
   assigned_users: any;
   childs = [];
+  toastr_options = {
+    positionClass: 'toast-bottom-right',
+    closeButton: true,
+    progressBar: true
+  };
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private toastr: ToastrService,
     private storeService: StoresService,
-    private usersService: UsersService
-    ) { }
+    private regionService: RegionService,
+    private usersService: UsersService,
+    private permissionService: CurrentpermissionService
+    ) {
+    this.regionData = this.regionService.getRegionData();
+    this.regions = Object.keys(this.regionData);
+    this.permissionService.getPermissions((permissions) => {
+      if (permissions.user_type !== 'super') {
+        const store_permission = permissions.store;
+        if (!store_permission.edit) {
+          window.history.back();
+          this.toastr.error('You have no permission to edit store!', 'Permission Error', this.toastr_options);
+        }
+      }
+    });
+  }
 
   ngOnInit() {
-    this.getStore(this.route.snapshot.params['id']);
-    // Init UI elements
-    toastr.options = {
-      'debug': false,
-      'newestOnTop': false,
-      'positionClass': 'toast-bottom-right',
-      'closeButton': true,
-      'progressBar': true
+    this.store_info = {
+      phone: '',
+      email: '',
+      mobile: '',
+      fax: '',
+      address: {
+        address1: '',
+        address2: ''
+      },
+      city: '',
+      region: '',
+      postcode: '',
+      country: ''
     };
+    this.getStore(this.route.snapshot.params['id']);
     this.getAllStores();
   }
   // Get All Stores
@@ -85,7 +92,7 @@ export class StoreComponent implements OnInit {
   getStore(id) {
     this.storeService.getStore(id).then((res) => {
       this.store = res;
-      this.store_info = res['store_info'];
+      this.store_info = Object.assign(this.store_info, res['store_info']);
       this.account_info = res['account_info'];
       this.address = this.store_info['address'];
       this.cities = this.regionData[this.store_info.region];
@@ -114,9 +121,9 @@ export class StoreComponent implements OnInit {
     this.store['store_info'] = this.store_info;
     this.storeService.updateStore(this.store['_id'], JSON.stringify(this.store)).then((result) => {
       if (!result['success']) {
-        toastr.error('Sorry, cannot edit this store, please try again');
+        this.toastr.error('Sorry, cannot edit this store, please try again', '', this.toastr_options);
       } else {
-        toastr.success('Success !!!');
+        this.toastr.success('Success !!!', '', this.toastr_options);
         this.router.navigate(['/stores']);
       }
     }, (err) => {

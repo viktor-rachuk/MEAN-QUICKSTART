@@ -1,6 +1,6 @@
 import { browser, by, element } from 'protractor';
 
-export class StartPage {
+export class CcportalPage {
   navigateTo() {
     return browser.get('/');
   }
